@@ -1,9 +1,91 @@
 <template>
-  <div class='container'>学科管理</div>
+  <div class="container">
+    <el-card>
+      <subjectSearch
+        :labelName="labelName"
+        @searchSubject="searchSubjectFn"
+      ></subjectSearch>
+      <subjectTable
+        v-bind.sync="tableData"
+        :NavList="NavList"
+        :loading="loading"
+        @sizeChange="sizeChange"
+        @pageChange="pageChange"
+      >
+        <template v-slot:default="{ data }">
+          <el-button type="text" @click="subjectClassificationFn(data)"
+            >学科分类</el-button
+          >
+          <el-button type="text">学科标签</el-button>
+          <el-button type="text">修改</el-button>
+          <el-button type="text">删除</el-button>
+        </template>
+      </subjectTable>
+    </el-card>
+  </div>
 </template>
 
 <script>
-export default {}
+import { list } from '@/api/hmmm/subjects'
+import subjectSearch from '@/components/subject/search'
+import subjectTable from '@/components/subject/table'
+
+export default {
+  name: 'Subject',
+  data() {
+    return {
+      labelName: '学科',
+      tableData: {},
+      NavList: [
+        { label: '学科名称', value: 'subjectName' },
+        { label: '创建者', value: 'username' },
+        { label: '创建日期', value: 'addDate' },
+        { label: '前台是否显示', value: 'isFrontDisplay' },
+        { label: '二级目录', value: 'twoLevelDirectory' },
+        { label: '标签', value: 'tags' },
+        { label: '题目数量', value: 'totals' }
+      ],
+      baseParams: {
+        page: 1,
+        pagesize: 10,
+        subjectName: ''
+      }
+    }
+  },
+  created() {
+    this.getSubjectList()
+  },
+
+  components: { subjectSearch, subjectTable },
+
+  methods: {
+    async getSubjectList() {
+      this.loading = true
+      const { data } = await list(this.baseParams)
+      data.page = +data.page
+      data.pagesize = +data.pagesize
+      this.tableData = data
+      // console.log(this.tableData)
+    },
+    pageChange(val) {
+      this.baseParams.page = +val
+      this.getSubjectList()
+    },
+    sizeChange(val) {
+      this.baseParams.pagesize = +val
+      this.getSubjectList()
+    },
+    searchSubjectFn(val) {
+      this.baseParams.subjectName = val
+      this.baseParams.page = 1
+      this.baseParams.pagesize = 10
+      this.getSubjectList()
+    },
+    subjectClassificationFn(val) {
+      console.log(val)
+    }
+  }
+}
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang="less"></style>

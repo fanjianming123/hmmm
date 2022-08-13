@@ -5,7 +5,7 @@ export default {
     value: '启用'
   },
   {
-    id: '2',
+    id: '0',
     value: '禁用'
   }
   ],

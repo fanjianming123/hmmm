@@ -25,6 +25,7 @@ export default {
 .app-main{
   position: relative;
   top: 75px;
+  padding: 10px;
   // z-index: 0;
 }
 </style>
