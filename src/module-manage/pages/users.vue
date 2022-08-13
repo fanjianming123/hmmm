@@ -6,16 +6,23 @@
         <el-row type="flex">
           <el-col>
             <el-input
-              v-model="userName"
+              v-model="RoleName"
+              @keyup.enter.native="enterName"
               placeholder="根据用户名搜索"
               style="width: 200px; margin-right: 15px"
             ></el-input>
-            <el-button size="small">清空</el-button>
-            <el-button size="small" type="primary">搜索</el-button>
+            <el-button size="small" @click="deleteInput">清空</el-button>
+            <el-button size="small" type="primary" @click="serachName"
+              >搜索</el-button
+            >
           </el-col>
           <el-col>
             <el-row type="flex" justify="end">
-              <el-button size="small" icon="el-icon-edit" type="success"
+              <el-button
+                size="small"
+                icon="el-icon-edit"
+                type="success"
+                @click="addIshow"
                 >新增用户</el-button
               >
             </el-row>
@@ -38,10 +45,11 @@
             <el-table-column prop="username" label="用户名"> </el-table-column>
             <el-table-column prop="permission_group_title" label="权限组名称">
             </el-table-column>
-            <el-table-column prop="role" label="角色"> </el-table-column>
+            <el-table-column prop="role" label="角色"></el-table-column>
             <el-table-column label="操作">
-              <template
+              <template slot-scope="{ row }"
                 ><el-button
+                  @click="isShowedit(row)"
                   class="edit-btn"
                   type="primary"
                   icon="el-icon-edit"
@@ -59,43 +67,116 @@
         </template>
         <!-- 分页 -->
         <div class="footer-page">
-          <page></page>
+          <page
+            :total="counts"
+            :paginationPage="paginationPage"
+            :paginationPagesize="paginationPagesize"
+          ></page>
         </div>
       </el-col>
     </el-row>
+    <!-- 新增弹层 -->
+    <!-- :pageTitle="pageTitle" -->
+    <userFrom
+      :formBase="formBase"
+      :ruleInline="ruleInline"
+      :Visible.sync="Visible"
+      :text="text"
+      :PermissionGroupsList="list"
+    ></userFrom>
   </el-card>
 </template>
 
 <script>
 import page from "../components/page-tool.vue";
 import { list } from "@/api/base/users.js";
-// import user from "../components/user-add.vue";
+import { simple } from "@/api/base/permissions.js";
+import userFrom from "../components/user-add.vue";
 export default {
   name: "usersInfo",
   data() {
     return {
-      userName: "",
+      RoleName: "",
       userData: [],
-      counts: "",
-      page: {
+      counts: "", //总条数
+      pages: {
         page: 1,
         pagesize: 10,
+      },
+      paginationPage: "", //当前页数
+      paginationPagesize: "", //每页显示条目个数，支持 .sync 修饰符
+      text: "创建用户",
+      pageTitle: "#409eff",
+      Visible: false,
+      list: [],
+      formBase: {
+        username: "",
+        email: "",
+        password: "",
+        role: "",
+        permission_group_id: "",
+        phone: "",
+        introduction: "",
+      }, // 新增表单数据
+      ruleInline: {
+        username: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+        ],
+        email: [{ required: true, message: "邮箱不能为空", trigger: "blur" }],
+        password: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+        ],
+        role: [{ required: true, message: "角色不能为空", trigger: "blur" }],
+        phone: [{ required: true, message: "电话不能为空", trigger: "blur" }],
       },
     };
   },
   components: {
     page, //分页
-    // user, //新增弹层
+    userFrom, //新增弹层
   },
   created() {
-    this.getuserInfo();
+    this.getuserInfo(this.pages);
   },
 
   methods: {
-    async getuserInfo() {
-      const { data } = await list(this.page);
-      this.userData = data.list;
-      this.counts = data.counts;
+    //获取用户列表
+    async getuserInfo(data) {
+      const res = await list(data);
+      // console.log(res)
+      this.userData = res.data.list;
+      this.counts = res.data.counts;
+      this.paginationPage = res.pages;
+      this.paginationPagesize = res.pagesize;
+    },
+    //确定搜索按钮
+    serachName() {
+      const data = {
+        page: this.pages.page,
+        pagesize: this.pages.pagesize,
+        username: this.RoleName,
+      };
+      this.getuserInfo(data);
+    },
+    //取消搜索按钮
+    deleteInput() {
+      this.RoleName = "";
+      this.getuserInfo(this.pages);
+    },
+    // 回车
+    enterName() {
+      this.serachName();
+    },
+    //新增
+    async addIshow() {
+      this.Visible = true;
+      const { data } = await simple();
+      this.list = data;  //权限组
+    },
+    //编辑
+    isShowedit(val) {
+      this.formBase = val;
+      this.Visible = true;
     },
   },
 };
