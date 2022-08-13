@@ -48,7 +48,7 @@ export default {
         page: 1,
         pagesize: 10,
         directoryName: '',
-        state: ''
+        state: null
       }
     }
   },
@@ -81,10 +81,14 @@ export default {
     },
     searchDirectoryFn(val) {
       this.baseParams.directoryName = val[0]
-      this.baseParams.state = +val[1]
+      if (val[1] !== '') {
+        this.baseParams.state = +val[1]
+      } else {
+        this.baseParams.state = null
+      }
       this.baseParams.page = 1
       this.baseParams.pagesize = 10
-      // console.log(this.baseParams)
+      console.log(this.baseParams)
       this.getSubjectList()
     }
   }

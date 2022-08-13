@@ -4,6 +4,7 @@
       <subjectSearch
         :labelName="labelName"
         @searchSubject="searchSubjectFn"
+        @AddSubject="AddSubjectFn"
       ></subjectSearch>
       <subjectTable
         v-bind.sync="tableData"
@@ -12,16 +13,23 @@
         @sizeChange="sizeChange"
         @pageChange="pageChange"
       >
-        <template v-slot:default="{ data }">
+        <template v-slot:default="data">
           <el-button type="text" @click="subjectClassificationFn(data)"
             >学科分类</el-button
           >
           <el-button type="text">学科标签</el-button>
-          <el-button type="text">修改</el-button>
+          <el-button type="text" @click="editFn(data)">修改</el-button>
           <el-button type="text">删除</el-button>
         </template>
       </subjectTable>
     </el-card>
+    <subjectAdd
+      :showAddSubjectDialog.sync="showAddSubjectDialog"
+      @closeAddDialog="showAddSubjectDialog = false"
+      :editItem="editItem"
+      :isEdit="isEdit"
+      @add-success="getSubjectList()"
+    ></subjectAdd>
   </div>
 </template>
 
@@ -29,7 +37,7 @@
 import { list } from '@/api/hmmm/subjects'
 import subjectSearch from '@/components/subject/search'
 import subjectTable from '@/components/subject/table'
-
+import subjectAdd from '../components/subjects-add.vue'
 export default {
   name: 'Subject',
   data() {
@@ -49,14 +57,17 @@ export default {
         page: 1,
         pagesize: 10,
         subjectName: ''
-      }
+      },
+      showAddSubjectDialog: false, // 新增弹层
+      editItem: {},
+      isEdit: false
     }
   },
   created() {
     this.getSubjectList()
   },
 
-  components: { subjectSearch, subjectTable },
+  components: { subjectSearch, subjectTable, subjectAdd },
 
   methods: {
     async getSubjectList() {
@@ -81,8 +92,19 @@ export default {
       this.baseParams.pagesize = 10
       this.getSubjectList()
     },
+    AddSubjectFn() {
+      this.isEdit = false
+      this.editItem = {}
+      this.showAddSubjectDialog = true
+    },
     subjectClassificationFn(val) {
       console.log(val)
+    },
+    editFn({ data }) {
+      this.isEdit = true
+      this.editItem = data
+      console.log(data)
+      this.showAddSubjectDialog = true
     }
   }
 }

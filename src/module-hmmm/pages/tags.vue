@@ -30,7 +30,7 @@ import subjectSearch from '@/components/subject/search'
 import subjectTable from '@/components/subject/table'
 
 export default {
-  name: 'tags',
+  name: 'Tags',
   data() {
     return {
       labelName: '标签',
@@ -47,7 +47,7 @@ export default {
         page: 1,
         pagesize: 10,
         tagName: '',
-        state: ''
+        state: null
       }
     }
   },
@@ -80,14 +80,14 @@ export default {
     },
     searchTagFn(val) {
       this.baseParams.tagName = val[0]
-      if (val[1] !== undefined) {
+      if (val[1] !== '') {
         this.baseParams.state = +val[1]
-      }else{
-        this.baseParams.state = ''
+      } else {
+        this.baseParams.state = null
       }
       this.baseParams.page = 1
       this.baseParams.pagesize = 10
-      console.log(this.baseParams.state)
+      console.log(this.baseParams.tagName)
       this.getSubjectList()
     }
   }

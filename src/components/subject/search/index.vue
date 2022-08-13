@@ -41,6 +41,7 @@
             style="height: 32px"
             class="add-btn"
             icon="el-icon-edit"
+            @click="addDate"
             >新增{{ labelName }}</el-button
           >
         </el-row>
@@ -93,7 +94,7 @@ export default {
   methods: {
     clearInput() {
       this.valueName = ''
-      this.state = undefined
+      this.state = ''
       this.inputFn()
     },
     searchFn() {
@@ -112,12 +113,16 @@ export default {
       } else if (this.labelName === '目录') {
         this.directoryName = ''
       } else if (this.labelName === '标签') {
-        this.tagName === ''
+        console.log(1)
+        this.tagName = ''
       }
       this.searchFn()
     },
     enterSearch() {
       this.searchFn()
+    },
+    addDate() {
+      this.$emit('AddSubject', true)
     }
   }
 }
