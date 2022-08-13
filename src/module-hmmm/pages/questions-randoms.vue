@@ -27,12 +27,11 @@
       </el-alert>
       <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%; margin-top: 20px">
-        <el-table-column prop="id" label="编号" width="180"> </el-table-column>
+        <el-table-column prop="id" label="编号"> </el-table-column>
         <el-table-column
           prop="questionType"
           :formatter="formatterQuestionType"
           label="题型"
-          width="180"
         >
         </el-table-column>
         <el-table-column label="题目编号">
