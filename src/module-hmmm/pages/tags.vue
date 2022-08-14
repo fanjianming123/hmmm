@@ -1,11 +1,17 @@
 <template>
   <div class="container">
     <el-card>
-        <el-breadcrumb separator=">" class="el-card__header" v-if="$route?.query?.data?.id">
+      <el-breadcrumb
+        separator=">"
+        class="el-card__header"
+        v-if="$route?.query?.data?.id"
+      >
         <el-breadcrumb-item :to="{ path: '/subjects/list' }"
-          ><span style="color:#000">学科管理</span></el-breadcrumb-item
+          ><span style="color: #000">学科管理</span></el-breadcrumb-item
         >
-        <el-breadcrumb-item>{{$route.query.data.subjectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{
+          $route.query.data.subjectName
+        }}</el-breadcrumb-item>
         <el-breadcrumb-item>标签</el-breadcrumb-item>
       </el-breadcrumb>
       <subjectSearch
@@ -44,6 +50,7 @@
       :showAddTagDialog="showAddTagDialog"
       :isEdit="isEdit"
       :editItem="editItem"
+      :subjectID="baseParams.subjectID"
       @closeAddDialog="showAddTagDialog = false"
       @add-success="getSubjectList()"
     ></tagAdd>

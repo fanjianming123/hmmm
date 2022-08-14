@@ -13,7 +13,11 @@
         label-width="80px"
         class="demo-ruleForm"
       >
-        <el-form-item label="所属学科" prop="subjectName">
+        <el-form-item
+          label="所属学科"
+          prop="subjectName"
+          v-if="subjectID === null"
+        >
           <el-select
             v-model="ruleForm.subjectID"
             placeholder="请选择"
@@ -48,7 +52,7 @@ export default {
   data() {
     return {
       ruleForm: {
-        subjectID: '',
+        subjectID: this.subjectID,
         tagName: ''
       },
       rules: {
@@ -71,6 +75,10 @@ export default {
     editItem: {
       type: Object,
       default: () => ({})
+    },
+    subjectID: {
+      type: Number,
+      default: null
     }
   },
   watch: {

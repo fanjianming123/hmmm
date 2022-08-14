@@ -45,6 +45,7 @@
       :showAddDirectoryDialog="showAddDirectoryDialog"
       :isEdit="isEdit"
       :editItem="editItem"
+      :subjectID="baseParams.subjectID"
       @closeAddDialog="showAddDirectoryDialog = false"
       @add-success="getSubjectList()"
     ></directorysAdd>
