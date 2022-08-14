@@ -1,6 +1,13 @@
 <template>
   <div class="container">
     <el-card>
+      <el-breadcrumb separator=">" class="el-card__header" v-if="$route?.query?.data?.id">
+        <el-breadcrumb-item :to="{ path: '/subjects/list' }"
+          ><span style="color:#000">学科管理</span></el-breadcrumb-item
+        >
+        <el-breadcrumb-item>{{$route.query.data.subjectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>目录</el-breadcrumb-item>
+      </el-breadcrumb>
       <subjectSearch
         :labelName="labelName"
         :isFromSubject="isFromSubject"
@@ -81,6 +88,7 @@ export default {
   created() {
     this.baseParams.subjectID = this.$route?.query?.data?.id
     this.getSubjectList()
+    console.log(this.$route?.query?.data);
   },
 
   components: { subjectSearch, subjectTable, directorysAdd },
@@ -169,4 +177,10 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="scss">
+.el-card__header {
+  padding: 18px 20px;
+  border-bottom: 1px solid #ebeef5;
+  -webkit-box-sizing: border-box;
+}
+</style>
