@@ -12,7 +12,7 @@
 export default {
   name: 'layoutAppMain',
   computed: {
-    cachedViews () {
+    cachedViews() {
       return this.$store.state.tagsView.cachedViews
     }
     // key() {
@@ -22,10 +22,10 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-.app-main{
+.app-main {
   position: relative;
   top: 75px;
-  padding: 10px;
+
   // z-index: 0;
 }
 </style>

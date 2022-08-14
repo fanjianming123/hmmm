@@ -33,7 +33,11 @@
       <!-- 右侧按钮部分 -->
       <el-col>
         <el-row type="flex" justify="end">
-          <el-button type="text" icon="el-icon-back" v-if="!isSubject"
+          <el-button
+            type="text"
+            icon="el-icon-back"
+            v-if="isShowBackButton"
+            @click="$router.push('/subjects/list')"
             >返回学科</el-button
           >
           <el-button
@@ -70,12 +74,19 @@ export default {
     labelName: {
       type: String,
       required: true
+    },
+    isFromSubject: {
+      type: Boolean,
+      default: false
     }
   },
-
   computed: {
     isSubject() {
       return this.labelName === '学科'
+    },
+    isShowBackButton() {
+      console.log(this.labelName !== '学科' && this.isFromSubject === true)
+      return this.labelName !== '学科' && this.isFromSubject === true
     }
   },
 
@@ -122,7 +133,13 @@ export default {
       this.searchFn()
     },
     addDate() {
-      this.$emit('AddSubject', true)
+      if (this.labelName === '学科') {
+        this.$emit('AddSubject', true)
+      } else if (this.labelName === '目录') {
+        this.$emit('AddDirectory', true)
+      } else if (this.labelName === '标签') {
+        this.$emit('AddTag', true)
+      }
     }
   }
 }

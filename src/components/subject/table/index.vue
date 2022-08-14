@@ -86,9 +86,13 @@ export default {
     NavList: {
       type: Array,
       default: () => []
+    },
+    subjectID: {
+      type: Number,
+      default: null
     }
   },
-  beforeMount() {},
+
   computed: {
     tableIndex() {
       return this.pagesize * (this.page - 1) + 1
@@ -113,7 +117,9 @@ export default {
     items: {
       immediate: true,
       handler(val) {
-        if (val.length > 0) {
+        if (val.length > 0 && this.subjectID === null) {
+          this.loading = false
+        } else if (this.subjectID !== null) {
           this.loading = false
         }
       }

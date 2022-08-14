@@ -17,9 +17,9 @@
           <el-button type="text" @click="subjectClassificationFn(data)"
             >学科分类</el-button
           >
-          <el-button type="text">学科标签</el-button>
+          <el-button type="text" @click="subjectTagFn(data)">学科标签</el-button>
           <el-button type="text" @click="editFn(data)">修改</el-button>
-          <el-button type="text">删除</el-button>
+          <el-button type="text" @click="deleteFn(data)">删除</el-button>
         </template>
       </subjectTable>
     </el-card>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { list } from '@/api/hmmm/subjects'
+import { list, remove } from '@/api/hmmm/subjects'
 import subjectSearch from '@/components/subject/search'
 import subjectTable from '@/components/subject/table'
 import subjectAdd from '../components/subjects-add.vue'
@@ -99,12 +99,45 @@ export default {
     },
     subjectClassificationFn(val) {
       console.log(val)
+      this.$router.push({
+        path: '/subjects/directorys',
+        query: val
+      })
+    },
+     subjectTagFn(val) {
+      console.log(val)
+      this.$router.push({
+        path: '/subjects/tags',
+        query: val
+      })
     },
     editFn({ data }) {
       this.isEdit = true
       this.editItem = data
       console.log(data)
       this.showAddSubjectDialog = true
+    },
+    deleteFn({ data }) {
+      console.log(data)
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          await remove(data)
+          this.getSubjectList()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   }
 }
