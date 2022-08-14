@@ -1,9 +1,16 @@
 <template>
-  <div class='container'>题组管理</div>
+  <el-card class="box-card">
+    <SearchTop></SearchTop>
+  </el-card>
 </template>
 
 <script>
-export default {}
+import SearchTop from "../components/questions-subject-search.vue";
+export default {
+  components: {
+    SearchTop,
+  },
+};
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang="less"></style>
