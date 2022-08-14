@@ -14,7 +14,7 @@
             <el-button size="small" @click="deleteInput">清空</el-button>
             <el-button size="small" type="primary" @click="serachName"
               >搜索</el-button
-            >
+            ><span>冉新</span>
           </el-col>
           <el-col>
             <el-row type="flex" justify="end">
@@ -60,6 +60,7 @@
                   type="danger"
                   icon="el-icon-delete"
                   circle
+                  @click="deleteEdit(row)"
                 ></el-button>
               </template>
             </el-table-column>
@@ -71,6 +72,8 @@
             :total="counts"
             :paginationPage="paginationPage"
             :paginationPagesize="paginationPagesize"
+            @pageChange="pageChange"
+            @pageSizeChange="pageSizeChange"
           ></page>
         </div>
       </el-col>
@@ -81,15 +84,16 @@
       :formBase="formBase"
       :ruleInline="ruleInline"
       :Visible.sync="Visible"
-      :text="text"
+      :text="isEdit"
       :PermissionGroupsList="list"
+      @newDataes="getuserInfo"
     ></userFrom>
   </el-card>
 </template>
 
 <script>
 import page from "../components/page-tool.vue";
-import { list } from "@/api/base/users.js";
+import { list, remove } from "@/api/base/users.js";
 import { simple } from "@/api/base/permissions.js";
 import userFrom from "../components/user-add.vue";
 export default {
@@ -105,10 +109,10 @@ export default {
       },
       paginationPage: "", //当前页数
       paginationPagesize: "", //每页显示条目个数，支持 .sync 修饰符
-      text: "创建用户",
+      isEdit: false,
       pageTitle: "#409eff",
       Visible: false,
-      list: [],
+      list: [], //权限组
       formBase: {
         username: "",
         email: "",
@@ -170,13 +174,59 @@ export default {
     //新增
     async addIshow() {
       this.Visible = true;
+      this.isEdit = false;
       const { data } = await simple();
-      this.list = data;  //权限组
+      this.list = data; //权限组
     },
     //编辑
     isShowedit(val) {
-      this.formBase = val;
+      const newVal = {
+        avatar: val.avatar,
+        username: val.username,
+        email: val.email,
+        password: val.password,
+        role: val.role,
+        permission_group_id: val.permission_group_id,
+        phone: val.phone,
+        introduction: val.introduction,
+        id: val.id,
+      };
+      // console.log(newVal);
+      this.formBase = newVal;
       this.Visible = true;
+      this.isEdit = true;
+    },
+    //点击进入某一页
+    pageChange(val) {
+      this.pages.page = val;
+      this.getuserInfo(this.pages);
+    },
+    // 每页显示条数
+    pageSizeChange(val) {
+      this.pages.pagesize = val;
+      this.getuserInfo(this.pages);
+    },
+    //删除
+    async deleteEdit(row) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          await remove(row);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+          this.getuserInfo(this.pages);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
   },
 };

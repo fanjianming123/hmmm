@@ -58,7 +58,7 @@
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
         </el-form-item> -->
-        <el-form-item :label="$t('table.introduction')">
+        <el-form-item :label="$t('table.introduction')" prop="introduction">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 4 }"
@@ -100,21 +100,23 @@ export default {
   },
   computed: {
     titleInfo() {
-      return this.formBase.id ? "编辑用户" : "创建用户";
+      return this.text ? "编辑用户" : "创建用户";
     },
   },
   methods: {
     // 弹层显示 头像
-    dialogFormV() {
-      this.dialogFormVisible = true;
-    },
+    // dialogFormV() {
+    //   this.dialogFormVisible = true;
+    // },
     // 弹层隐藏 头像
-    dialogFormH() {
-      this.dialogFormVisible = false;
-    },
+    // dialogFormH() {
+    //   this.dialogFormVisible = false;
+    // },
     // 对话框退出
     handleClose() {
       this.$emit("update:Visible", false);
+      this.$refs.dataForm.resetFields();
+      // this.formBase = {};
     },
 
     // 表单提交
@@ -127,11 +129,15 @@ export default {
           };
           if (this.formBase.id) {
             update(data).then(() => {
-              this.$emit("newDataes", this.formBase);
+              this.$emit("newDataes");
+              this.handleClose();
+              this.$message.success("修改成功");
             });
           } else {
             add(this.formBase).then(() => {
-              this.$emit("newDataes", this.formBase);
+              this.$emit("newDataes");
+              this.handleClose();
+              this.$message.success("添加成功");
             });
           }
         } else {

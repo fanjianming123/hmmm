@@ -36,12 +36,17 @@
           style="width: 100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection"></el-table-column>
-          <el-table-column label="用户名" >
+          <el-table-column type="selection" width="400"></el-table-column>
+          <el-table-column label="用户名">
             <template slot-scope="scope">{{ scope.row.title }}</template>
           </el-table-column>
-          <el-table-column prop="create_date" label="日期"> </el-table-column>
-          <el-table-column label="操作" show-overflow-tooltip>
+          <el-table-column
+            prop="create_date"
+            label="日期"
+            :formatter="formatterTime"
+          >
+          </el-table-column>
+          <el-table-column label="操作" show-overflow-tooltip width="120">
             <template
               ><el-button
                 class="edit-btn"
@@ -70,6 +75,7 @@
 <script>
 import page from "../components/page-tool.vue";
 import { list } from "@/api/base/permissions.js";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -142,6 +148,9 @@ export default {
       const { data } = await list(this.pages);
       this.tableData = data.list;
       console.log(data);
+    },
+    formatterTime(row, column, cellValue, index) {
+      return dayjs(cellValue).format("YYYY-MM-DD");
     },
   },
 };
