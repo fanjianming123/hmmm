@@ -19,7 +19,7 @@
       <el-form-item label="学科" size="small">
         <el-select
           v-loading="loading"
-          v-model="formInline.subject"
+          v-model="formInline.subjectID"
           placeholder="请选择"
           @focus="getSubjectList"
         >
@@ -33,12 +33,13 @@
       </el-form-item>
       <el-form-item label="二级目录" size="small">
         <el-select
-          @focus="getNextSubjectList"
-          v-model="formInline.region"
+          v-loading="loading"
+          @focus="getcatalogIDList"
+          v-model="formInline.catalogID"
           placeholder="请选择"
         >
           <el-option
-            v-for="item in NextSubjectList"
+            v-for="item in catalogIDList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -46,51 +47,98 @@
         </el-select>
       </el-form-item>
       <el-form-item label="标签" size="small">
-        <el-select v-model="formInline.region" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
+        <el-select
+          v-loading="loading"
+          @focus="getTagsList"
+          v-model="formInline.tags"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in TagsList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关键字" size="small">
-        <el-input v-model="formInline.name"></el-input>
+        <el-input v-model.trim="formInline.keyword"></el-input>
       </el-form-item>
       <el-form-item label="试题类型" size="small">
-        <el-select v-model="formInline.region" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
+        <el-select v-model="formInline.questionType" placeholder="请选择">
+          <el-option
+            v-for="item in questionType"
+            :key="item.label"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="难度" size="small">
-        <el-select v-model="formInline.region" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
+        <el-select v-model="formInline.difficulty" placeholder="请选择">
+          <el-option
+            v-for="item in difficulty"
+            :key="item.label"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="方向" size="small">
-        <el-select v-model="formInline.region" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
+        <el-select v-model="formInline.direction" placeholder="请选择">
+          <el-option
+            v-for="item in direction"
+            :key="item"
+            :label="item"
+            :value="item"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="录入人" size="small">
-        <el-select v-model="formInline.region" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
+        <el-select v-model="formInline.creatorID" placeholder="请选择">
+          <el-option :label="name" :value="name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="题目备注" size="small">
-        <el-input v-model="formInline.name"></el-input>
+        <el-input v-model.trim="formInline.remarks"></el-input>
       </el-form-item>
       <el-form-item label="企业简称" size="small">
-        <el-input v-model="formInline.name"></el-input>
+        <el-input v-model.trim="formInline.shortName"></el-input>
       </el-form-item>
       <el-form-item label="城市" size="small" class="small">
-        <el-select v-model="formInline.region" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
+        <el-select
+          v-loading="loading"
+          v-model="formInline.city"
+          placeholder="请选择"
+          @focus="getCityList"
+        >
+          <el-option
+            v-for="item in citysList"
+            :key="item"
+            :label="item"
+            :value="item"
+          ></el-option>
         </el-select>
-        <el-select v-model="formInline.region" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
+        <el-select
+          v-loading="loading"
+          v-model="formInline.area"
+          placeholder="请选择"
+          @focus="getDatasCity"
+        >
+          <el-option
+            v-for="item in areaList"
+            :key="item"
+            :label="item"
+            :value="item"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item class="SearchButton">
         <el-row type="flex" justify="end">
-          <el-button size="small">清除</el-button>
-          <el-button type="primary" size="small">搜索</el-button>
+          <el-button size="small" @click="clearFormInline">清除</el-button>
+          <el-button type="primary" size="small" @click="searchForm"
+            >搜索</el-button
+          >
         </el-row>
       </el-form-item>
     </el-form>
@@ -98,43 +146,117 @@
 </template>
 
 <script>
-import * as subjects from "@/api/hmmm/subjects.js";
-import * as Tags from "@/api/hmmm/tags.js";
+import * as subjects from '@/api/hmmm/subjects.js'
+import * as Tags from '@/api/hmmm/tags.js'
+import * as directorys from '@/api/hmmm/directorys.js'
+import { questionType, difficulty, direction } from '@/api/hmmm/constants.js'
+import { provinces, citys } from '@/api/hmmm/citys.js'
 export default {
-  name: "subjectSearch",
+  name: 'subjectSearch',
   data() {
     return {
       formInline: {
-        user: "",
-        region: "",
-        name: "",
-        subject: "",
+        subjectID: '', //学科
+        catalogID: '', //二级目录
+        tags: '', //标签
+        keyword: '', //关键字
+        questionType: '', //试题类型
+        difficulty: '', //难度
+        direction: '', //方向
+        creatorID: '', //录入人
+        remarks: '', //题目备注
+        shortName: '', //企业简称
+        city: '', //城市(市)
+        area: '' //城市(区)
       },
       loading: false,
-      subjectList: [],
-      NextSubjectList: [],
-    };
+      subjectList: [], //学科列表
+      catalogIDList: [], //二级目录列表
+      TagsList: [], //标签列表
+      questionType, //试题类型列表
+      difficulty, //难度列表
+      direction, //方向列表
+      name: this.$store.state.user.name, //录入人
+      citysList: [], //城市(市)列表
+      areaList: [] //城市(区)列表
+    }
   },
   props: {},
   created() {},
-
   methods: {
     async getSubjectList() {
-      this.loading = true;
-      const { data } = await subjects.simple();
-      this.subjectList = data;
-      this.loading = false;
+      this.loading = true
+      const { data } = await subjects.simple()
+      this.subjectList = data
+      this.loading = false
     },
-    async getNextSubjectList() {
+    async getcatalogIDList() {
+      this.loading = true
+      // console.log(this.formInline.subject);
+
+      const { data } = await directorys.simple({
+        subjectID: this.formInline.subjectID
+      })
+      console.log(data)
+      this.catalogIDList = data
+      this.loading = false
+    },
+    async getTagsList() {
+      this.loading = true
       // console.log(this.formInline.subject);
       const { data } = await Tags.simple({
-        subjectID: this.formInline.subject,
-      });
-      console.log(data);
-      this.NextSubjectList = data;
+        subjectID: this.formInline.subjectID
+      })
+      console.log(data)
+      this.TagsList = data
+      this.loading = false
     },
-  },
-};
+    getCityList() {
+      this.loading = true
+      // console.log(111);
+      this.citysList = provinces()
+      this.loading = false
+    },
+    getDatasCity() {
+      this.loading = true
+      this.areaList = citys(this.formInline.city)
+      this.loading = false
+    },
+    clearFormInline() {
+      this.formInline = {
+        subjectID: '',
+        catalogID: '',
+        tags: '',
+        keyword: '',
+        questionType: '',
+        difficulty: '',
+        direction: '',
+        creatorID: '',
+        remarks: '',
+        shortName: '',
+        city: '',
+        area: ''
+      }
+    },
+    searchForm() {
+      let flag
+      for (let key in this.formInline) {
+        if (this.formInline[key]) {
+          flag = true
+          break
+        } else {
+          flag = false
+        }
+      }
+      // console.log(flag)
+      if (flag) {
+        this.$emit('SearchSubjectList', this.formInline)
+      } else {
+        this.$emit('SearchSubjectList')
+      }
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

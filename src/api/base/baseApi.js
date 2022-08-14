@@ -27,5 +27,5 @@ export default {
       id: "4",
       value: "试题录入",
     },
-  ]
+  ],
 };

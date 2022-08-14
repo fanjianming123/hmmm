@@ -34,32 +34,36 @@
       </el-table-column>
       <slot></slot>
     </el-table>
+    <el-row type="flex" justify="end">
+      <el-pagination background layout="prev, pager, next" :total="1000">
+      </el-pagination>
+    </el-row>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {}
   },
   props: {
     dataName: {
       type: Number,
-      required: true,
+      required: true
     },
     tableData: {
       type: Array,
-      required: true,
+      required: true
     },
     tableDataHeade: {
       type: Array,
-      required: true,
-    },
+      required: true
+    }
   },
   created() {},
 
-  methods: {},
-};
+  methods: {}
+}
 </script>
 
 <style scoped lang="scss">

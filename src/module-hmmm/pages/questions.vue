@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <SearchTop ></SearchTop>
+    <SearchTop @SearchSubjectList="SearchSubjectList"></SearchTop>
     <SubjuctList
       :dataName="dataName"
       :tableData="tableData"
@@ -47,44 +47,52 @@
 </template>
 
 <script>
-import SearchTop from "../components/questions-subject-search.vue";
-import SubjuctList from "../components/questions-subject-list.vue";
-import { list } from "@/api/hmmm/questions.js";
+import SearchTop from '../components/questions-subject-search.vue'
+import SubjuctList from '../components/questions-subject-list.vue'
+import * as questions from '@/api/hmmm/questions.js'
 
 export default {
   data() {
     return {
       tableDataHeade: [
-        { label: "试题编号", value: "number" },
-        { label: "学科", value: "subject" },
-        { label: "目录", value: "catalog" },
-        { label: "题型", value: "questionType" },
-        { label: "题干", value: "question" },
-        { label: "录入时间", value: "addDate" },
-        { label: "难度", value: "difficulty" },
-        { label: "录入人", value: "creator" },
+        { label: '试题编号', value: 'number' },
+        { label: '学科', value: 'subject' },
+        { label: '目录', value: 'catalog' },
+        { label: '题型', value: 'questionType' },
+        { label: '题干', value: 'question' },
+        { label: '录入时间', value: 'addDate' },
+        { label: '难度', value: 'difficulty' },
+        { label: '录入人', value: 'creator' }
       ],
       tableData: [],
       dataName: 0,
-    };
+      page: 1,
+      pagesize: 5
+    }
   },
   components: {
     SearchTop,
-    SubjuctList,
+    SubjuctList
   },
   created() {
-    this.getQuestionsList();
+    this.getQuestionsList({
+      page: this.page,
+      pagesize: this.pagesize
+    })
   },
   methods: {
-    async getQuestionsList() {
-      const { data } = await list();
-      console.log(data);
-      this.dataName = data.counts;
-      this.tableData = data.items;
+    async getQuestionsList(val) {
+      const { data } = await questions.list(val)
+      console.log(data)
+      this.dataName = data.counts
+      this.tableData = data.items
     },
     previewFn() {},
-  },
-};
+    SearchSubjectList(val) {
+      this.getQuestionsList(val)
+    }
+  }
+}
 </script>
 
 <style scoped lang="less"></style>
