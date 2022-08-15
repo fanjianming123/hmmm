@@ -35,7 +35,16 @@
       <slot></slot>
     </el-table>
     <el-row type="flex" justify="end">
-      <el-pagination background layout="prev, pager, next" :total="1000">
+      <el-pagination
+        background
+        layout="prev, pager, next,sizes,jumper"
+        :total="total"
+        :current-page="page"
+        :page-size="pageSize"
+        :page-sizes="[5, 10, 20, 50]"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      >
       </el-pagination>
     </el-row>
   </div>
@@ -43,6 +52,7 @@
 
 <script>
 export default {
+  name: 'subjectList',
   data() {
     return {}
   },
@@ -58,11 +68,32 @@ export default {
     tableDataHeade: {
       type: Array,
       required: true
+    },
+    page: {
+      type: Number,
+      required: true
+    },
+    total: {
+      type: Number,
+      required: true
+    },
+    pageSize: {
+      type: Number,
+      required: true
     }
   },
   created() {},
 
-  methods: {}
+  methods: {
+    handleSizeChange(val) {
+      this.$emit('update:pageSize', val)
+      this.$emit('updataList')
+    },
+    handleCurrentChange(val) {
+      this.$emit('update:page', val)
+      this.$emit('updataList')
+    }
+  }
 }
 </script>
 
