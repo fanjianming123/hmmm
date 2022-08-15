@@ -36,7 +36,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -77,17 +76,12 @@ export default {
           address: "上海市普陀区金沙江路 1518 弄",
         },
       ],
-     
     };
   },
 
-  created() {
-    
-  },
+  created() {},
 
-  methods: {
-    
-  },
+  methods: {},
 };
 </script>
 
@@ -101,5 +95,13 @@ export default {
   background-color: #fef0f0;
   color: #f6827f;
   border: 1px solid #fcd5d5;
+}
+.edit-btn:hover {
+  background-color: #409eff;
+  color: #fff;
+}
+.delete-btn:hover {
+  background-color: #f56c6c;
+  color: #fff;
 }
 </style>

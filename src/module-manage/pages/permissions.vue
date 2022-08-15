@@ -18,10 +18,22 @@
           </el-col>
           <el-col>
             <el-row type="flex" justify="end">
-              <el-button size="small" icon="el-icon-edit" type="success"
+              <el-button
+                size="small"
+                icon="el-icon-edit"
+                type="success"
+                @click="addPermissions"
                 >新增权限组</el-button
               >
             </el-row>
+            <!-- 弹层 -->
+            <permissionsADD
+              :Visible="Visible"
+              :text="text"
+              ref="permissionsList"
+              @handleCloseModal="removeDialog"
+              @newDataes="getpermissions"
+            ></permissionsADD>
           </el-col>
         </el-row>
       </el-col>
@@ -53,6 +65,7 @@
           <el-table-column label="操作" show-overflow-tooltip width="120">
             <template slot-scope="{ row }"
               ><el-button
+                @click="modifyPermissions(row)"
                 class="edit-btn"
                 type="primary"
                 icon="el-icon-edit"
@@ -85,8 +98,9 @@
 
 <script>
 import page from "../components/page-tool.vue";
-import { list, remove } from "@/api/base/permissions.js";
+import { list, remove, detail } from "@/api/base/permissions.js";
 import dayjs from "dayjs";
+import permissionsADD from "../components/permissions-add.vue";
 export default {
   data() {
     return {
@@ -132,14 +146,23 @@ export default {
         page: 1,
         pagesize: 10, //发送
       },
+      // text: "创建权限组",
       counts: "", //总条数
       page: "", //当前页 传给子组件
       pagesize: "", //每页显示的条数 传给子组件
+      Visible: false, // 新增弹层
+      PermissionName: false,
     };
   },
   components: {
     page, //分页
     // user, //新增弹层
+    permissionsADD,
+  },
+  computed: {
+    text() {
+      return this.PermissionName ? "创建权限组" : "编辑权限组";
+    },
   },
   created() {
     this.getpermissions(this.pages);
@@ -212,6 +235,22 @@ export default {
       this.pages.pagesize = val;
       this.getpermissions(this.pages);
     },
+    // 编辑弹层
+    async modifyPermissions(row) {
+      this.Visible = true;
+      this.PermissionName = false;
+      const { data } = await detail(row);
+      this.$refs.permissionsList.formBase = data;
+    },
+    // 新增弹层
+    addPermissions() {
+      this.Visible = true;
+      this.PermissionName = true;
+    },
+    // 关闭新增权限组
+    removeDialog() {
+      this.Visible = false;
+    },
   },
 };
 </script>
@@ -221,6 +260,14 @@ export default {
   background-color: #ecf5ff;
   color: #71a7ff;
   border: 1px solid #d3e8ff;
+}
+.edit-btn:hover {
+  background-color: #409eff;
+  color: #fff;
+}
+.delete-btn:hover {
+  background-color: #f56c6c;
+  color: #fff;
 }
 .delete-btn {
   background-color: #fef0f0;
