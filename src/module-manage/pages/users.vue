@@ -120,6 +120,7 @@ export default {
         role: "",
         permission_group_id: "",
         phone: "",
+        sex:1,
         introduction: "",
       }, // 新增表单数据
       ruleInline: {
