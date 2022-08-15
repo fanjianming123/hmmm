@@ -9,16 +9,31 @@
               v-model="RoleName"
               placeholder="根据用户名搜索"
               style="width: 200px; margin-right: 15px"
+              @keyup.enter.native="enterSearch"
             ></el-input>
-            <el-button size="small">清除</el-button>
-            <el-button size="small" type="primary">搜索</el-button>
+            <el-button size="small" @click="clearInput">清除</el-button>
+            <el-button size="small" type="primary" @click="searchName"
+              >搜索</el-button
+            >
           </el-col>
           <el-col>
             <el-row type="flex" justify="end">
-              <el-button size="small" icon="el-icon-edit" type="success"
+              <el-button
+                size="small"
+                icon="el-icon-edit"
+                type="success"
+                @click="addPermissions"
                 >新增权限组</el-button
               >
             </el-row>
+            <!-- 弹层 -->
+            <permissionsADD
+              :Visible="Visible"
+              :text="text"
+              ref="permissionsList"
+              @handleCloseModal="removeDialog"
+              @newDataes="getpermissions"
+            ></permissionsADD>
           </el-col>
         </el-row>
       </el-col>
@@ -42,19 +57,22 @@
           </el-table-column>
           <el-table-column
             prop="create_date"
+            sortable
             label="日期"
             :formatter="formatterTime"
           >
           </el-table-column>
           <el-table-column label="操作" show-overflow-tooltip width="120">
-            <template
+            <template slot-scope="{ row }"
               ><el-button
+                @click="modifyPermissions(row)"
                 class="edit-btn"
                 type="primary"
                 icon="el-icon-edit"
                 circle
               ></el-button>
               <el-button
+                @click="removeCurrent(row)"
                 class="delete-btn"
                 type="danger"
                 icon="el-icon-delete"
@@ -65,7 +83,13 @@
         </el-table>
         <!-- 分页 -->
         <div class="footer-page">
-          <page></page>
+          <page
+            :total="counts"
+            :paginationPage="page"
+            :paginationPagesize="pagesize"
+            @pageChange="pageChange"
+            @pageSizeChange="pageSizeChange"
+          ></page>
         </div>
       </el-col>
     </el-row>
@@ -74,8 +98,9 @@
 
 <script>
 import page from "../components/page-tool.vue";
-import { list } from "@/api/base/permissions.js";
+import { list, remove, detail } from "@/api/base/permissions.js";
 import dayjs from "dayjs";
+import permissionsADD from "../components/permissions-add.vue";
 export default {
   data() {
     return {
@@ -119,38 +144,112 @@ export default {
       RoleName: "",
       pages: {
         page: 1,
-        pagesize: 10,
+        pagesize: 10, //发送
       },
+      // text: "创建权限组",
+      counts: "", //总条数
+      page: "", //当前页 传给子组件
+      pagesize: "", //每页显示的条数 传给子组件
+      Visible: false, // 新增弹层
+      PermissionName: false,
     };
   },
   components: {
     page, //分页
     // user, //新增弹层
+    permissionsADD,
+  },
+  computed: {
+    text() {
+      return this.PermissionName ? "创建权限组" : "编辑权限组";
+    },
   },
   created() {
-    this.getpermissions();
+    this.getpermissions(this.pages);
   },
 
   methods: {
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      console.log(val); // 选中获得当前项  复选框
     },
-    async getpermissions() {
-      const { data } = await list(this.pages);
+    //获取列表数据
+    async getpermissions(params) {
+      const { data } = await list(params);
       this.tableData = data.list;
-      console.log(data);
+      this.counts = data.counts;
+      this.page = data.page;
+      this.pagesize = data.pagesize;
+      // console.log(data);
     },
+    //搜索名字
+    searchName() {
+      const data = {
+        page: this.pages.page,
+        pagesize: this.pages.pagesize,
+        title: this.RoleName,
+      };
+      this.getpermissions(data);
+    },
+    // 删除input框
+    clearInput() {
+      this.RoleName = "";
+      this.getpermissions(this.pages);
+    },
+    // 删除当前项
+    removeCurrent(row) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          await remove(row);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+          this.getpermissions(this.pages);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    // 回车搜索
+    enterSearch() {
+      this.searchName();
+    },
+    // 过滤时间
     formatterTime(row, column, cellValue, index) {
       return dayjs(cellValue).format("YYYY-MM-DD");
+    },
+    // 更新pege
+    pageChange(val) {
+      this.pages.page = val;
+      this.getpermissions(this.pages);
+    },
+    //更新pegeSize
+    pageSizeChange(val) {
+      this.pages.pagesize = val;
+      this.getpermissions(this.pages);
+    },
+    // 编辑弹层
+    async modifyPermissions(row) {
+      this.Visible = true;
+      this.PermissionName = false;
+      const { data } = await detail(row);
+      this.$refs.permissionsList.formBase = data;
+    },
+    // 新增弹层
+    addPermissions() {
+      this.Visible = true;
+      this.PermissionName = true;
+    },
+    // 关闭新增权限组
+    removeDialog() {
+      this.Visible = false;
     },
   },
 };
@@ -161,6 +260,14 @@ export default {
   background-color: #ecf5ff;
   color: #71a7ff;
   border: 1px solid #d3e8ff;
+}
+.edit-btn:hover {
+  background-color: #409eff;
+  color: #fff;
+}
+.delete-btn:hover {
+  background-color: #f56c6c;
+  color: #fff;
 }
 .delete-btn {
   background-color: #fef0f0;

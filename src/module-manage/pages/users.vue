@@ -120,6 +120,7 @@ export default {
         role: "",
         permission_group_id: "",
         phone: "",
+        sex: 1,
         introduction: "",
       }, // 新增表单数据
       ruleInline: {
@@ -237,6 +238,14 @@ export default {
   background-color: #ecf5ff;
   color: #71a7ff;
   border: 1px solid #d3e8ff;
+}
+.edit-btn:hover {
+  background-color: #409eff;
+  color: #fff;
+}
+.delete-btn:hover {
+  background-color: #f56c6c;
+  color: #fff;
 }
 .delete-btn {
   background-color: #fef0f0;
