@@ -73,6 +73,10 @@ export default {
   name: "items",
   // props: ['text', 'pageTitle', 'PermissionGroupsList',],
   props: {
+    notPointDataList: {
+      type: Array,
+      required: true,
+    },
     Visible: {
       type: Boolean,
       required: true,
@@ -140,7 +144,7 @@ export default {
       showPointBlock: false,
       dialogFormVisible: false,
       typeStatus: false,
-      notPointDataList: [],
+      // notPointDataList: [],
       parentDataList: [],
       formMenu: {
         pid: "", // 父级Id
@@ -164,14 +168,6 @@ export default {
   },
   computed: {},
   methods: {
-    // 弹层显示
-    dialogFormV() {
-      this.dialogFormVisible = true;
-    },
-    // 弹层隐藏
-    dialogFormH() {
-      this.dialogFormVisible = false;
-    },
     handleChooseType() {
       if (this.type === "menu") {
         _this.changeToMenu();
@@ -297,6 +293,7 @@ export default {
       list().then((data) => {
         _this.parentDataList = data.data;
         _this.notPointDataList = [];
+        console.log(data);
         this.dataRest(data.data);
         this.changeArays();
       });

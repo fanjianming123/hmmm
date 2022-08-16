@@ -1,5 +1,11 @@
 <template>
-  <el-card class="box-card">
+  <el-card
+    class="box-card"
+    v-loading="MenusLoading"
+    element-loading-text="给我一点时间"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <el-row>
       <el-col style="margin-bottom: 20px">
         <el-row type="flex" justify="end">
@@ -12,7 +18,11 @@
           >
         </el-row>
         <!-- 新增弹出层 -->
-        <Newmenu :Visible.sync="Visible" :text="text"></Newmenu>
+        <Newmenu
+          :Visible.sync="Visible"
+          :text="text"
+          :notPointDataList="tableData"
+        ></Newmenu>
       </el-col>
       <!-- 表单区域 -->
       <el-col>
@@ -23,18 +33,14 @@
           default-expand-all
           :tree-props="{ children: 'childs', hasChildren: 'points' }"
         >
-          <el-table-column label="标题" width="200">
+          <el-table-column label="标题" width="220">
             <template slot-scope="{ row }">
-              <i
-                class="el-icon-folder-opened"
-                v-if="row.childs"
-                @click="ad(row)"
-              ></i>
+              <i class="el-icon-folder-opened" v-if="row.childs"></i>
               <i
                 class="el-icon-document-remove"
-                v-if="!row.childs && !row.points"
+                v-if="!row.childs && !row.is_point"
               ></i>
-              <i class="el-icon-view" v-else></i>
+              <i class="el-icon-view" v-if="row.is_point"></i>
               {{ row.title }}
             </template>
           </el-table-column>
@@ -77,6 +83,7 @@ export default {
       Visible: false,
       tableData: [],
       textTitle: false,
+      MenusLoading: false,
     };
   },
   components: {
@@ -92,9 +99,11 @@ export default {
   },
   methods: {
     async getMenusList() {
+      this.MenusLoading = true;
       const res = await list();
       this.tableData = res.data;
-      console.log(res);
+      this.MenusLoading = false;
+      // console.log(res);
     },
     //新增弹层
     addMenus() {
@@ -128,9 +137,6 @@ export default {
           });
         });
     },
-    ad(row) {
-      console.log(row);
-    },
   },
 };
 </script>
@@ -153,5 +159,8 @@ export default {
 .delete-btn:hover {
   background-color: #f56c6c;
   color: #fff;
+}
+i {
+  font-size: 16px;
 }
 </style>

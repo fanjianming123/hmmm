@@ -1,5 +1,11 @@
 <template>
-  <el-card class="box-card">
+  <el-card
+    class="box-card"
+    v-loading="UserLoading"
+    element-loading-text="给我一点时间"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <el-row>
       <!-- 头部搜索 -->
       <el-col>
@@ -101,6 +107,7 @@ export default {
   data() {
     return {
       RoleName: "",
+      UserLoading: false,
       userData: [],
       counts: "", //总条数
       pages: {
@@ -147,12 +154,14 @@ export default {
   methods: {
     //获取用户列表
     async getuserInfo(data) {
+      this.UserLoading = true;
       const res = await list(data);
       // console.log(res)
       this.userData = res.data.list;
       this.counts = res.data.counts;
       this.paginationPage = res.pages;
       this.paginationPagesize = res.pagesize;
+      this.UserLoading = false;
     },
     //确定搜索按钮
     serachName() {
