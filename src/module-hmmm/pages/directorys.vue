@@ -34,7 +34,7 @@
           >
           <el-button
             type="text"
-            :disabled="data.state === 1"
+            :disabled="data.state === 1 || data.totals !==0"
             @click="removeFn(data)"
             >删除</el-button
           >

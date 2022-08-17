@@ -94,3 +94,19 @@ export const publishType = [
     label: '已下架'
   }
 ]
+
+// 审核状态
+export const chkState = [
+  {
+    value: 0,
+    label: '待审核'
+  },
+  {
+    value: 1,
+    label: '已审核'
+  },
+  {
+    value: 2,
+    label: '已拒绝'
+  }
+]

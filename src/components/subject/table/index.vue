@@ -121,6 +121,8 @@ export default {
     items: {
       immediate: true,
       handler(val) {
+        console.log(this.subjectID)
+        console.log(val.length)
         if (val.length > 0 && this.subjectID === null) {
           this.loading = false
         } else if (this.subjectID !== null) {

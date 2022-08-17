@@ -24,6 +24,7 @@
         v-bind.sync="tableData"
         :NavList="NavList"
         :loading="loading"
+        :subjectID="baseParams.subjectID"
         @sizeChange="sizeChange"
         @pageChange="pageChange"
       >
@@ -93,6 +94,7 @@ export default {
   },
   created() {
     this.baseParams.subjectID = this.$route?.query?.data?.id
+    console.log(this.baseParams.subjectID)
     this.getSubjectList()
   },
 
@@ -108,12 +110,12 @@ export default {
   },
   methods: {
     async getSubjectList() {
-      this.loading = true
       const { data } = await list(this.baseParams)
       data.page = +data.page
       data.pagesize = +data.pagesize
       this.tableData = data
-      // console.log(this.tableData)
+      console.log(this.tableData)
+
       // console.log(data)
     },
     pageChange(val) {
