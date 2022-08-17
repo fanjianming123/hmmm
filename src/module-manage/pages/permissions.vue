@@ -37,6 +37,7 @@
               :Visible="Visible"
               :text="text"
               ref="permissionsList"
+              :ruleInline="ruleInline"
               @handleCloseModal="removeDialog"
               @newDataes="getpermissions"
             ></permissionsADD>
@@ -151,6 +152,15 @@ export default {
       pages: {
         page: 1,
         pagesize: 10, //发送
+      },
+      ruleInline: {
+        title: [
+          {
+            required: true,
+            message: "用户名不能为空",
+            trigger: "blur",
+          },
+        ],
       },
       // text: "创建权限组",
       counts: "", //总条数

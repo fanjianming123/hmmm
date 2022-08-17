@@ -29,7 +29,7 @@
               >主导航</el-option
             >
             <el-option
-              v-for="items in notPointDataList"
+              v-for="items in PointDataList"
               :value="items.id"
               :key="items.id"
               :label="items.title"
@@ -73,7 +73,7 @@ export default {
   name: "items",
   // props: ['text', 'pageTitle', 'PermissionGroupsList',],
   props: {
-    notPointDataList: {
+    PointDataList: {
       type: Array,
       required: true,
     },
@@ -140,11 +140,10 @@ export default {
     };
     return {
       type: "menu",
-      showMenuBlock: true,
-      showPointBlock: false,
-      dialogFormVisible: false,
+      showMenuBlock: true, //显示 菜单 主导航
+      showPointBlock: false, // 显示 权限点
       typeStatus: false,
-      // notPointDataList: [],
+      notPointDataList: [],
       parentDataList: [],
       formMenu: {
         pid: "", // 父级Id
@@ -177,6 +176,7 @@ export default {
       }
     },
     changeType(flag) {
+      // console.log(flag);
       if (flag === "menu") {
         this.type = "menu";
         _this.changeToMenu();
@@ -221,12 +221,16 @@ export default {
     // 退出
     handleClose() {
       this.$emit("update:Visible", false);
+      this.$refs.formMenu.resetFields();
     },
     // 菜单和权限点选择：编辑
     handle_Edit(object) {
       update(this.formMenu).then(() => {
         this.$emit("handleCloseModal");
-        this.$emit("newDataes", this.formMenu);
+        this.$emit("newDataes");
+        // this.$message.success("修改成功")
+        this.handleClose();
+        this.handleResetForm();
       });
     },
     // 菜单和权限点选择：添加
@@ -235,7 +239,9 @@ export default {
         _this.handleResetForm();
         // _this.type = 'menu'
         this.$emit("handleCloseModal");
-        this.$emit("newDataes", this.formMenu);
+        this.$emit("newDataes");
+        this.$message.success("添加成功");
+        this.handleClose();
       });
     },
     handle_Add(object) {
@@ -289,11 +295,11 @@ export default {
       }
     },
     hanldeEditForm(objeditId) {
+      //这是组件定义好的编辑方法
       this.formMenu.id = objeditId;
       list().then((data) => {
         _this.parentDataList = data.data;
         _this.notPointDataList = [];
-        console.log(data);
         this.dataRest(data.data);
         this.changeArays();
       });

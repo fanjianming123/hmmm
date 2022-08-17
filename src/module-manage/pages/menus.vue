@@ -1,11 +1,5 @@
 <template>
-  <el-card
-    class="box-card"
-    v-loading="MenusLoading"
-    element-loading-text="给我一点时间"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-  >
+  <el-card class="box-card">
     <el-row>
       <el-col style="margin-bottom: 20px">
         <el-row type="flex" justify="end">
@@ -19,56 +13,24 @@
         </el-row>
         <!-- 新增弹出层 -->
         <Newmenu
+          ref="menus"
           :Visible.sync="Visible"
           :text="text"
-          :notPointDataList="tableData"
+          :PointDataList="treeList"
+          @newDataes="getMenusList"
         ></Newmenu>
       </el-col>
       <!-- 表单区域 -->
       <el-col>
-        <el-table
-          :data="tableData"
-          style="width: 100%"
-          row-key="id"
-          default-expand-all
-          :tree-props="{ children: 'childs', hasChildren: 'points' }"
-        >
-          <el-table-column label="标题" width="220">
-            <template slot-scope="{ row }">
-              <i class="el-icon-folder-opened" v-if="row.childs"></i>
-              <i
-                class="el-icon-document-remove"
-                v-if="!row.childs && !row.is_point"
-              ></i>
-              <i class="el-icon-view" v-if="row.is_point"></i>
-              {{ row.title }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="code" label="权限点代码"> </el-table-column>
-          <el-table-column
-            prop="address"
-            label="操作"
-            show-overflow-tooltip
-            width="120"
-          >
-            <template slot-scope="{ row }"
-              ><el-button
-                @click="permissionsMenus(row)"
-                class="edit-btn"
-                type="primary"
-                icon="el-icon-edit"
-                circle
-              ></el-button>
-              <el-button
-                @click="removeCurrent(row)"
-                class="delete-btn"
-                type="danger"
-                icon="el-icon-delete"
-                circle
-              ></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <TreeTable
+          :data="treeList"
+          :columns="columns"
+          :treeStructure="true"
+          :defaultExpandAll="true"
+          :listLoading="MenusLoading"
+          @removeUser="removeUser"
+          @handleUpdate="handleUpdate"
+        ></TreeTable>
       </el-col>
     </el-row>
   </el-card>
@@ -77,17 +39,24 @@
 <script>
 import { list, remove } from "@/api/base/menus";
 import Newmenu from "../components/menu-add.vue";
+import TreeTable from "@/components/TreeTable";
 export default {
+  name: "menus",
   data() {
     return {
       Visible: false,
-      tableData: [],
+      treeList: [],
       textTitle: false,
       MenusLoading: false,
+      columns: [
+        { text: "标题", prop: "title", value: "title", width: 220 },
+        { text: "权限点代码", prop: "code", value: "code" },
+      ],
     };
   },
   components: {
-    Newmenu,
+    Newmenu, // 新增弹出层
+    TreeTable, // 表格组件
   },
   created() {
     this.getMenusList();
@@ -101,7 +70,7 @@ export default {
     async getMenusList() {
       this.MenusLoading = true;
       const res = await list();
-      this.tableData = res.data;
+      this.treeList = res.data;
       this.MenusLoading = false;
       // console.log(res);
     },
@@ -109,21 +78,29 @@ export default {
     addMenus() {
       this.Visible = true;
       this.textTitle = true;
+      this.$refs.menus.handleResetForm(); //进入前重置表单清空
     },
     //编辑弹层
-    permissionsMenus(row) {
-      this.Visible = true;
-      this.textTitle = false;
+    handleUpdate(row) {
+      //点击编辑触发刚刚那个方法，把id传过去即可
+      this.Visible = true; //弹层显示
+      this.textTitle = false; //标题名
+      console.log(row);
+      // this.$refs.menus.formMenu = row;
+      const f = row.childs || row.points ? "menu" : "points";
+      this.$refs.menus.changeType(f);
+      this.$refs.menus.hanldeEditForm(row.id); //ref是弹出框的ref，拿到他身上的这个方法hanldeEditForm
     },
     //删除
-    removeCurrent(row) {
+    removeUser(row) {
+      // console.log(row);
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(async () => {
-          await remove(row);
+          await remove(row.id);
           this.$message({
             type: "success",
             message: "删除成功!",
@@ -133,7 +110,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消操作",
           });
         });
     },
