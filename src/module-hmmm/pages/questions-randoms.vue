@@ -100,10 +100,12 @@
       <el-row>
         <el-col :span="6">
           【题型】：
-          {{ list.questionType | questionType }}
+          {{ list.questionType | questionTypeFilter }}
         </el-col>
         <el-col :span="6">【编号】：{{ list.id }}</el-col>
-        <el-col :span="6">【难度】：{{ list.difficulty | difficulty }}</el-col>
+        <el-col :span="6"
+          >【难度】：{{ list.difficulty | difficultyFilter }}</el-col
+        >
         <el-col :span="6">【标签】：{{ list.tags }}</el-col>
       </el-row>
       <el-row style="margin-top: 20px">
@@ -122,7 +124,7 @@
             v-if="list.questionType == 1 || list.questionType == 2"
           >
             <p>
-              {{ list.questionType | difficulty }}
+              {{ list.questionType | difficultyFilter }}
               选项:（以下选中的选项为正确答案）
             </p>
             <!-- 单选 -->
@@ -184,11 +186,11 @@
 </template>
 
 <script>
-import { randoms, removeRandoms } from "../../api/hmmm/questions";
-import { questionType } from "../../api/hmmm/constants.js";
-import { detail } from "../../api/hmmm/questions";
+import { randoms, removeRandoms } from '../../api/hmmm/questions'
+import { questionType } from '../../api/hmmm/constants.js'
+import { detail } from '../../api/hmmm/questions'
 export default {
-  name: "QuestionsRandoms",
+  name: 'QuestionsRandoms',
   data() {
     return {
       tableData: [],
@@ -197,82 +199,82 @@ export default {
       questionType, // 题型
       page: 1, //当前页数
       pagesize: 20, //一页显示条数
-      keyword: "", //关键字
+      keyword: '', //关键字
       list: [], //基础题库与精选题库集合
       dialogVisible: false,
       showVideo: false,
       radio: 1,
-      checkList: ["选中且禁用", 1],
-      loading: false,
-    };
+      checkList: ['选中且禁用', 1],
+      loading: false
+    }
   },
   methods: {
     async getRandoms() {
       const {
-        data: { counts, items },
+        data: { counts, items }
       } = await randoms({
         page: this.page,
         pagesize: this.pagesize,
-        keyword: this.keyword,
-      });
-      this.tableData = items;
-      this.count = counts;
+        keyword: this.keyword
+      })
+      this.tableData = items
+      this.count = counts
     },
     formatterQuestionType(row, column, cellValue, index) {
       const findQuestionType = questionType.find(
         (item) => item.value == cellValue
-      );
-      return findQuestionType ? findQuestionType.label : "打野";
+      )
+      return findQuestionType ? findQuestionType.label : '打野'
     },
     handleCurrentChange(val) {
-      this.page = val;
-      this.getRandoms();
+      this.page = val
+      this.getRandoms()
     },
     handleSizeChange(val) {
-      this.pagesize = val;
-      this.getRandoms();
+      this.pagesize = val
+      this.getRandoms()
     },
     async searchGetRandoms() {
-      this.loading = true;
+      this.loading = true
       await randoms({
         page: 1,
         pagesize: 10,
-        keyword: this.keyword,
-      });
-      this.page = 1;
-      this.getRandoms();
-      this.loading = false;
+        keyword: this.keyword
+      })
+      this.page = 1
+      this.getRandoms()
+      this.loading = false
     },
     async delRandoms(row) {
-      this.$confirm("此操作将永久删除该题组, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('此操作将永久删除该题组, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(async () => {
-        await removeRandoms(row);
-        this.$message.success("删除成功");
-        this.getRandoms();
-      });
+        await removeRandoms(row)
+        this.$message.success('删除成功')
+        this.getRandoms()
+      })
     },
     async questionFn(row) {
-      this.dialogVisible = true;
-      const { data } = await detail(row);
-      console.log(data);
-      this.list = data;
+      this.dialogVisible = true
+      const { data } = await detail(row)
+      console.log(data)
+      this.list = data
     },
     onclose() {
-      this.dialogVisible = false;
-      this.list = [];
+      this.dialogVisible = false
+      this.list = []
     },
     keywordFn() {
-      this.keyword = "";
-      this.getRandoms();
-    },
+      this.keyword = ''
+      this.getRandoms()
+    }
   },
   created() {
-    this.getRandoms();
-  },
-};
+    this.getRandoms()
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -324,7 +326,7 @@ export default {
     //分页
     .button-row {
       margin-top: 20px;
-      ::v-deep .el-pagination span:not([class*="suffix"]) {
+      ::v-deep .el-pagination span:not([class*='suffix']) {
         display: inline-block;
         font-size: 13px;
         min-width: 35.5px;
