@@ -2,7 +2,6 @@
   <el-card class="box-card">
     <SearchTop @SearchSubjectList="SearchSubjectList"></SearchTop>
     <SubjuctList
-      :dataName="dataName"
       :tableData="tableData"
       :tableDataHeade="tableDataHeade"
       :page.sync="page"
@@ -72,7 +71,6 @@ export default {
         { label: '录入人', value: 'creator' }
       ],
       tableData: [],
-      dataName: 0,
       page: 1,
       pageSize: 5,
       total: 0,
@@ -93,7 +91,6 @@ export default {
     async getQuestionsList(val) {
       const { data } = await questions.list(val)
       // console.log(data)
-      this.dataName = data.counts
       this.tableData = data.items
       this.total = data.counts
     },

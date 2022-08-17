@@ -1,10 +1,11 @@
 <template>
   <el-card class="box-card">
     <SearchTop @SearchSubjectList="SearchSubjectList"></SearchTop>
-    <el-tabs v-model="chkState" type="card" @tab-click="changeChkState">
-      <el-tab-pane label="全部" name="first">
+    <el-tabs v-model="chkStateName" type="card" @tab-click="changeChkState">
+      <el-tab-pane label="全部" name="all">
         <SubjuctList
-          :dataName="dataName"
+          fixed="right"
+          width="200"
           :tableData="tableData"
           :tableDataHeade="tableDataHeade"
           :page.sync="page"
@@ -54,9 +55,159 @@
           </el-table-column>
         </SubjuctList>
       </el-tab-pane>
-      <el-tab-pane label="待审核" name="second">配置管理</el-tab-pane>
-      <el-tab-pane label="已审核" name="third">角色管理</el-tab-pane>
-      <el-tab-pane label="已拒绝" name="fourth">定时任务补偿</el-tab-pane>
+      <el-tab-pane label="待审核" name="Waiting">
+        <SubjuctList
+          :tableData="tableData"
+          :tableDataHeade="tableDataHeade"
+          :page.sync="page"
+          :total="total"
+          :pageSize.sync="pageSize"
+          @updataList="updataList"
+        >
+          <el-table-column fixed="right" label="操作" width="180">
+            <template slot-scope="scope">
+              <el-button
+                title="预览"
+                icon="el-icon-view"
+                circle
+                type="primary"
+                plain
+                size="small"
+                @click="previewFn(scope.row)"
+              ></el-button>
+              <el-button
+                title="修改"
+                icon="el-icon-edit"
+                circle
+                type="success"
+                plain
+                size="small"
+                @click="modify(scope.row)"
+              ></el-button>
+              <el-button
+                title="删除"
+                icon="el-icon-delete"
+                circle
+                type="danger"
+                plain
+                size="small"
+                @click="remove(scope.row)"
+              ></el-button>
+              <el-button
+                title="加入精选"
+                icon="el-icon-check"
+                circle
+                type="warning"
+                plain
+                size="small"
+                @click="choiceAdd(scope.row)"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </SubjuctList>
+      </el-tab-pane>
+      <el-tab-pane label="已审核" name="checked">
+        <SubjuctList
+          :tableData="tableData"
+          :tableDataHeade="tableDataHeade"
+          :page.sync="page"
+          :total="total"
+          :pageSize.sync="pageSize"
+          @updataList="updataList"
+        >
+          <el-table-column fixed="right" label="操作" width="180">
+            <template slot-scope="scope">
+              <el-button
+                title="预览"
+                icon="el-icon-view"
+                circle
+                type="primary"
+                plain
+                size="small"
+                @click="previewFn(scope.row)"
+              ></el-button>
+              <el-button
+                title="修改"
+                icon="el-icon-edit"
+                circle
+                type="success"
+                plain
+                size="small"
+                @click="modify(scope.row)"
+              ></el-button>
+              <el-button
+                title="删除"
+                icon="el-icon-delete"
+                circle
+                type="danger"
+                plain
+                size="small"
+                @click="remove(scope.row)"
+              ></el-button>
+              <el-button
+                title="加入精选"
+                icon="el-icon-check"
+                circle
+                type="warning"
+                plain
+                size="small"
+                @click="choiceAdd(scope.row)"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </SubjuctList>
+      </el-tab-pane>
+      <el-tab-pane label="已拒绝" name="Refused">
+        <SubjuctList
+          :tableData="tableData"
+          :tableDataHeade="tableDataHeade"
+          :page.sync="page"
+          :total="total"
+          :pageSize.sync="pageSize"
+          @updataList="updataList"
+        >
+          <el-table-column fixed="right" label="操作" width="180">
+            <template slot-scope="scope">
+              <el-button
+                title="预览"
+                icon="el-icon-view"
+                circle
+                type="primary"
+                plain
+                size="small"
+                @click="previewFn(scope.row)"
+              ></el-button>
+              <el-button
+                title="修改"
+                icon="el-icon-edit"
+                circle
+                type="success"
+                plain
+                size="small"
+                @click="modify(scope.row)"
+              ></el-button>
+              <el-button
+                title="删除"
+                icon="el-icon-delete"
+                circle
+                type="danger"
+                plain
+                size="small"
+                @click="remove(scope.row)"
+              ></el-button>
+              <el-button
+                title="加入精选"
+                icon="el-icon-check"
+                circle
+                type="warning"
+                plain
+                size="small"
+                @click="choiceAdd(scope.row)"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </SubjuctList>
+      </el-tab-pane>
     </el-tabs>
   </el-card>
 </template>
@@ -65,6 +216,7 @@
 import SearchTop from '../components/questions-subject-search.vue'
 import SubjuctList from '../components/questions-subject-list.vue'
 import * as questions from '@/api/hmmm/questions.js'
+import { chkState } from '@/api/hmmm/constants.js'
 export default {
   data() {
     return {
@@ -76,15 +228,19 @@ export default {
         { label: '题干', value: 'question' },
         { label: '录入时间', value: 'addDate' },
         { label: '难度', value: 'difficulty' },
-        { label: '录入人', value: 'creator' }
+        { label: '录入人', value: 'creator' },
+        { label: '审核状态', value: 'chkState' },
+        { label: '审核意见', value: 'chkRemarks' },
+        { label: '审核人', value: 'chkUser' },
+        { label: '发布状态', value: 'difficulty' }
       ],
       tableData: [],
-      dataName: 0,
       page: 1,
       pageSize: 5,
       total: 0,
       dialogVisible: false,
-      chkState: first
+      chkStateName: 'all',
+      chkState: 0
     }
   },
   components: {
@@ -99,14 +255,22 @@ export default {
   },
   methods: {
     async getQuestionsList(val) {
-      const { data } = await questions.list(val)
-      // console.log(data)
-      this.dataName = data.counts
+      const { data } = await questions.choice(val)
+      console.log(data)
       this.tableData = data.items
       this.total = data.counts
     },
     changeChkState(tab, event) {
-      console.log(tab, event)
+      this.chkStateName = tab.name
+      const item = chkState.find((item) => item.label === tab.label)
+      this.chkState = item ? item.value : ''
+      this.getQuestionsList({
+        page: this.page,
+        pagesize: this.pageSize,
+        chkState: this.chkState
+      })
+      // console.log(this.chkState)
+      // console.log(tab, event)
     },
     previewFn() {},
     SearchSubjectList(val) {

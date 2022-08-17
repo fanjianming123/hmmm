@@ -8,7 +8,11 @@
       </el-col>
       <el-col>
         <el-row type="flex" justify="end">
-          <el-button type="success" size="small">
+          <el-button
+            type="success"
+            size="small"
+            @click="$router.push('/questions/new')"
+          >
             <i class="el-icon-edit"></i>
             <span>新增试题</span>
           </el-button>
