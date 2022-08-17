@@ -1,5 +1,11 @@
 <template>
-  <el-card class="box-card">
+  <el-card
+    class="box-card"
+    v-loading="permissionsLoading"
+    element-loading-text="给我一点时间"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <el-row>
       <!-- 头部搜索 -->
       <el-col>
@@ -31,6 +37,7 @@
               :Visible="Visible"
               :text="text"
               ref="permissionsList"
+              :ruleInline="ruleInline"
               @handleCloseModal="removeDialog"
               @newDataes="getpermissions"
             ></permissionsADD>
@@ -146,12 +153,22 @@ export default {
         page: 1,
         pagesize: 10, //发送
       },
+      ruleInline: {
+        title: [
+          {
+            required: true,
+            message: "用户名不能为空",
+            trigger: "blur",
+          },
+        ],
+      },
       // text: "创建权限组",
       counts: "", //总条数
       page: "", //当前页 传给子组件
       pagesize: "", //每页显示的条数 传给子组件
       Visible: false, // 新增弹层
       PermissionName: false,
+      permissionsLoading: false,
     };
   },
   components: {
@@ -174,11 +191,13 @@ export default {
     },
     //获取列表数据
     async getpermissions(params) {
+      this.permissionsLoading = true;
       const { data } = await list(params);
       this.tableData = data.list;
       this.counts = data.counts;
       this.page = data.page;
       this.pagesize = data.pagesize;
+      this.permissionsLoading = false;
       // console.log(data);
     },
     //搜索名字
