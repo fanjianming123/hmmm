@@ -23,8 +23,12 @@
           <span v-if="item.label === '创建日期'">{{
             row[item.value] | formatTime
           }}</span>
-          <span v-else-if="item.label === '前台是否显示'">{{
-            ['否', '是'][row[item.value]]
+
+          <span v-else-if="item.label === '前台是否显示'"
+            >{{ ['否', '是'][row[item.value]] }}
+          </span>
+          <span v-else-if="item.label === '录入时间'">{{
+            row[item.value] | formatTime
           }}</span>
           <span v-else-if="item.label === '状态'">{{
             ['已禁用', '已启用'][row[item.value]]
@@ -117,6 +121,8 @@ export default {
     items: {
       immediate: true,
       handler(val) {
+        console.log(this.subjectID)
+        console.log(val.length)
         if (val.length > 0 && this.subjectID === null) {
           this.loading = false
         } else if (this.subjectID !== null) {
