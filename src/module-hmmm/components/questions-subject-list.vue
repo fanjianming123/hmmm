@@ -32,7 +32,7 @@
             {{ row[item.value] | chkStateFilter }}
           </span>
           <span v-else-if="item.label === '发布状态'">
-            {{ row[item.value] | chkStateFilter }}
+            {{ row | publishStateFilter }}
           </span>
           <span v-else>
             {{ row[item.value] }}
@@ -98,6 +98,16 @@ export default {
             return 103
           case '审核人':
             return 103
+          case '审核意见':
+            return 150
+          case '审核状态':
+            return 120
+          case '发布状态':
+            return 150
+          case '试题编号':
+            return 150
+          case '学科':
+            return 120
         }
       }
     }

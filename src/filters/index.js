@@ -198,7 +198,7 @@ export const difficultyFilter = (val) => {
   }
 }
 
-//难度分类
+//审核状态
 export const chkStateFilter = (val) => {
   if (val === 0) {
     return '待审核'
@@ -208,5 +208,29 @@ export const chkStateFilter = (val) => {
     return '拒绝'
   } else {
     return '未知'
+  }
+}
+
+//发布状态
+export const publishStateFilter = (val) => {
+  // log(val)
+  if (val.publishState === 1) {
+    if (val.chkState === 0 || val.chkState === 2) {
+      return '待发布'
+    } else if (val.chkState === 1) {
+      return '已发布'
+    }
+  } else if (val.publishState === 0) {
+    return '已下架'
+  }
+}
+
+//上下架
+export const publishFilter = (val) => {
+  // log(val)
+  if (val === 0) {
+    return '下架'
+  } else if (val === 1) {
+    return '上架'
   }
 }

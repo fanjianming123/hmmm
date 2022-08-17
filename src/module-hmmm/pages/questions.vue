@@ -50,6 +50,7 @@
         </template>
       </el-table-column>
     </SubjuctList>
+
   </el-card>
 </template>
 
