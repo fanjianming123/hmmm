@@ -10,6 +10,8 @@
                 <div class="grid-content bg-purple">
                   <el-form-item label="标签名称">
                     <el-input
+                      size="small"
+                      style="width: 330px"
                       v-model="form.tags"
                       placeholder="请输入"
                     ></el-input>
@@ -20,9 +22,10 @@
                 <div class="grid-content bg-purple">
                   <el-form-item label="城市">
                     <el-select
+                      size="small"
                       v-model="form.province"
                       placeholder="请选择"
-                      style="width: 368px"
+                      style="width: 330px"
                       @change="cityChange"
                     >
                       <el-option
@@ -39,8 +42,9 @@
                 <div class="grid-content bg-purple">
                   <el-form-item label="地区">
                     <el-select
+                      size="small"
                       v-model="form.city"
-                      style="width: 368px"
+                      style="width: 330px"
                       placeholder="请选择"
                     >
                       <el-option
@@ -57,37 +61,50 @@
                 <div class="grid-content bg-purple">
                   <el-form-item label="企业简称">
                     <el-input
+                      size="small"
                       v-model="form.shortName"
+                      style="width: 330px"
                       placeholder="请输入"
                     ></el-input>
                   </el-form-item>
                 </div>
               </el-col>
             </el-row>
-            <el-row :gutter="20">
+            <el-row :gutter="20" style="margin-top: -20px">
               <el-col :span="6">
                 <div class="grid-content bg-purple">
                   <el-form-item label="状态">
                     <el-select
+                      size="small"
                       v-model="form.state"
-                      style="width: 368px"
+                      style="width: 330px"
                       placeholder="请选择活动区域"
                     >
-                      <el-option label="启用" value="shanghai"></el-option>
-                      <el-option label="禁用" value="beijing"></el-option>
+                      <el-option
+                        :label="item.value"
+                        :value="item.id"
+                        v-for="item in statusOptionsList"
+                        :key="item.id"
+                      ></el-option>
                     </el-select>
                   </el-form-item>
                 </div>
               </el-col>
               <el-col :span="6" style="padding-left: 40px">
                 <div class="grid-content bg-purple">
-                  <el-button @click="clear">清除</el-button>
-                  <el-button type="primary" @click="search">搜索</el-button>
+                  <el-button @click="clear" size="small">清除</el-button>
+                  <el-button type="primary" size="small" @click="search"
+                    >搜索</el-button
+                  >
                 </div>
               </el-col>
               <el-col :span="12" style="text-align: right">
                 <div class="grid-content bg-purple">
-                  <el-button type="success" @click="dialogVisible = true">
+                  <el-button
+                    type="success"
+                    size="small"
+                    @click="dialogVisible = true"
+                  >
                     <i class="el-icon-edit"></i>
                     <span>新增用户</span>
                   </el-button>
@@ -105,32 +122,22 @@
 
           <!-- 表格 -->
           <el-table :data="tableData" style="width: 100%">
-            <el-table-column class="grid" type="index" label="序号" width="180">
+            <el-table-column class="grid" label="序号" prop="id" width="160">
+            </el-table-column>
+            <el-table-column class="grid" prop="number" label="企业编号">
+            </el-table-column>
+            <el-table-column class="grid" prop="shortName" label="企业简称">
+            </el-table-column>
+            <el-table-column class="grid" prop="tags" label="标签">
+            </el-table-column>
+            <el-table-column class="grid" prop="creatorID" label="创建者">
             </el-table-column>
             <el-table-column
               class="grid"
-              prop="number"
-              label="企业编号"
-              width="180"
+              label="创建日期"
+              width="200"
+              :formatter="formatterTime"
             >
-            </el-table-column>
-            <el-table-column
-              class="grid"
-              prop="shortName"
-              label="企业简称"
-              width="150"
-            >
-            </el-table-column>
-            <el-table-column class="grid" prop="tags" label="标签" width="230">
-            </el-table-column>
-            <el-table-column
-              class="grid"
-              prop="creatorID"
-              label="创建者"
-              width="180"
-            >
-            </el-table-column>
-            <el-table-column class="grid" label="创建日期" width="180">
               <template v-slot="{ row }">
                 {{ row.addDate | parseTimeByString }}
               </template>
@@ -139,15 +146,15 @@
               class="grid"
               prop="remarks"
               label="备注"
-              width="180"
+              width="200"
             >
             </el-table-column>
-            <el-table-column class="grid" label="状态" width="180">
+            <el-table-column class="grid" label="状态">
               <template v-slot="{ row }">{{
-                row.state == 1 ? "启用" : "禁用"
+                row.state == 1 ? '启用' : '禁用'
               }}</template>
             </el-table-column>
-            <el-table-column class="grid" label="操作">
+            <el-table-column class="grid" label="操作" width="200">
               <template v-slot="{ row }">
                 <!-- 按钮一 -->
                 <el-button
@@ -279,64 +286,67 @@ import {
   remove,
   add,
   detail,
-  update,
-} from "@/api/hmmm/companys";
-import { provinces, citys } from "@/api/hmmm/citys";
+  update
+} from '@/api/hmmm/companys'
+import { provinces, citys } from '@/api/hmmm/citys'
+import dayjs from 'dayjs'
+import baseApi from '@/api/base/baseApi'
 export default {
   data() {
     return {
       form: {
-        tags: "",
-        shortName: "",
-        state: "",
-        city: "",
-        province: "",
+        tags: '',
+        shortName: '',
+        state: '',
+        city: '',
+        province: ''
       },
       formDialog: {
-        city: "",
-        company: "",
-        id: "",
-        province: "",
-        remarks: "",
-        shortName: "",
-        tags: "",
-        isFamous: true,
+        city: '',
+        company: '',
+        id: '',
+        province: '',
+        remarks: '',
+        shortName: '',
+        tags: '',
+        isFamous: true
       },
       rules: {
         shortName: [
           {
             required: true,
-            message: "企业简称不能为空",
-          },
+            message: '企业简称不能为空'
+          }
         ],
         company: [
           {
             required: true,
-            message: "所属公司不能为空",
-          },
+            message: '所属公司不能为空'
+          }
         ],
         province: [
           {
             required: true,
-            message: "请选择省份",
-          },
+            message: '请选择省份',
+            trigger: 'Change'
+          }
         ],
         tags: [
           {
             required: true,
-            message: "请输入标签",
-          },
+            message: '请输入标签'
+          }
         ],
         remarks: [
           {
             required: true,
-            message: "备注不能为空",
-          },
-        ],
+            message: '备注不能为空'
+          }
+        ]
       },
       pages: {
         page: 1, //当前页数
-        pagesize: 5, //页尺寸
+        pagesize: 10 //页尺寸
         // tags: "", //标签名称
         // province: "", //企业所在地省份
         // city: "", //企业所在城市
@@ -346,122 +356,152 @@ export default {
       // 表格
       tableData: [],
       total: 0,
-      id: "",
+      id: '',
       dialogVisible: false,
       provincesList: [], //省
       cityList: [], //市
-    };
+      statusOptionsList: baseApi.status
+    }
   },
 
   created() {
-    this.tableList();
-    this.provinces();
+    this.tableList()
+    this.provinces()
   },
 
   computed: {
     title() {
-      return this.formDialog.id ? "编辑用户" : "创建用户";
-    },
+      return this.formDialog.id ? '编辑用户' : '创建用户'
+    }
+  },
+  // 用来监视城市，如果有值，则地区选择默认选中地区数组中的第一个值
+  watch: {
+    'form.province': {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        if (val) {
+          this.form.city = this.cityList[0]
+        }
+      }
+    }
   },
 
   methods: {
     // 企业管理列表
     async tableList() {
-      const { data } = await list(this.pages);
-      console.log(data);
-      this.tableData = data.items;
-      this.total = data.counts;
+      const { data } = await list(this.pages)
+      console.log(data)
+      this.tableData = data.items
+      this.total = data.counts
     },
 
     // 表单
     cityChange(val) {
-      this.form.province = val;
-      this.cityList = citys(val);
-      this.form.city = [];
+      this.form.province = val
+      this.cityList = citys(val)
+      this.form.city = []
     },
     // 添加/编辑(根据有无id)
     async goodid() {
       // 校验表单
-      await this.$refs.formData.validate();
+      await this.$refs.formData.validate()
       // console.log(this.formDialog.isFamous);
       if (this.formDialog.id) {
         if (this.formDialog.isFamous === 1) {
-          this.formDialog.isFamous = true;
+          this.formDialog.isFamous = true
         } else {
-          this.formDialog.isFamous = false;
+          this.formDialog.isFamous = false
         }
-        await update(this.formDialog);
+        await update(this.formDialog)
       } else {
-        await add(this.formDialog);
+        await add(this.formDialog)
       }
-      this.dialogVisible = false;
-      this.tableList();
+      this.dialogVisible = false
+      this.tableList()
     },
     // 清除
     clear() {
-      this.form = {};
-      this.tableList();
+      this.form = {}
+      this.tableList()
     },
     // 分页
     changeChange(val) {
-      this.pages.page = val;
-      this.tableList();
+      this.pages.page = val
+      this.tableList()
     },
     // 分页(每页多少条)
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
     },
     // 企业管理设置状态
     async changeState(val) {
       // console.log(val);
       await this.$confirm(
-        `已成功${val.state === 1 ? "禁用" : "启用"}是否继续？`,
-        "提示",
+        `已成功${val.state === 1 ? '禁用' : '启用'}是否继续？`,
+        '提示',
         {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         }
-      );
+      )
       await disabled(
         {
           id: val.id,
-          state: val.state === 1 ? 0 : 1,
+          state: val.state === 1 ? 0 : 1
         },
-        this.$message.success(`已成功${val.state === 1 ? "禁用" : "启用"}`)
-      );
-      this.tableList();
+        this.$message.success(`已成功${val.state === 1 ? '禁用' : '启用'}`)
+      )
+      this.tableList()
     },
     // 删除
-    async remove(val) {
-      await remove(val);
-      this.tableList();
+    remove(val) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          await remove(val)
+          this.tableList()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     // 编辑
     async edit(val) {
-      this.dialogVisible = true;
-      const res = await detail(val);
-      console.log(res);
-      this.formDialog = res.data;
+      this.dialogVisible = true
+      const res = await detail(val)
+      console.log(res)
+      this.formDialog = res.data
     },
     // 关闭弹框
     Close() {
-      this.dialogVisible = false;
-      this.$refs.formData.resetFields();
-      this.formDialog = {};
+      this.dialogVisible = false
+      this.$refs.formData.resetFields()
+      this.formDialog = {}
     },
     // 省
     provinces() {
-      const res = provinces();
+      const res = provinces()
       // console.log(res);
-      this.provincesList = res;
+      this.provincesList = res
     },
     // 市
     selectChange(val) {
-      this.formDialog.province = val;
-      const res = citys(val);
+      this.formDialog.province = val
+      const res = citys(val)
       // console.log(res);
-      this.cityList = res;
+      this.cityList = res
     },
     // 搜索
     async search() {
@@ -470,13 +510,17 @@ export default {
         shortName: this.form.shortName,
         state: this.form.state,
         city: this.form.city,
-        province: this.form.province,
-      });
-      console.log(res);
-      this.tableData = res.data.items;
+        province: this.form.province
+      })
+      console.log(res)
+      this.tableData = res.data.items
     },
-  },
-};
+    // 格式化事件
+    formatterTime(row, column, cellValue, index) {
+      return dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss')
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">
@@ -484,9 +528,9 @@ export default {
   position: relative;
   top: 75px;
 }
-// .app-container {
-//   padding: 20px;
-// }
+.app-container {
+  margin: -20px;
+}
 .el-row {
   margin-bottom: 20px;
   &:last-child {
