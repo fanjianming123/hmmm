@@ -16,9 +16,9 @@ import "font-awesome/css/font-awesome.css";
 /*
  * 注册 - 业务模块
  */
-import dashboard from "@/module-dashboard/"; // 面板
-import base from "@/module-manage/"; // 用户管理
-import hmmm from "@/module-hmmm/"; // 黑马面面
+import dashboard from '@/module-dashboard/' // 面板
+import base from '@/module-manage/' // 用户管理
+import hmmm from '@/module-hmmm/' // 黑马面面
 
 Vue.use(dashboard, store);
 Vue.use(base, store);

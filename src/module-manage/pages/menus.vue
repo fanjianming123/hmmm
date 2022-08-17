@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-row>
-      <el-col style="margin-bottom:20px;">
+      <el-col style="margin-bottom: 20px">
         <el-row type="flex" justify="end">
           <el-button size="small" icon="el-icon-edit" type="success"
             >新增权限组</el-button
@@ -11,10 +11,8 @@
       <!-- 表单区域 -->
       <el-col>
         <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="name" label="标题" >
-          </el-table-column>
-          <el-table-column prop="name" label="权限点代码" >
-          </el-table-column>
+          <el-table-column prop="name" label="标题"> </el-table-column>
+          <el-table-column prop="name" label="权限点代码"> </el-table-column>
           <el-table-column prop="address" label="操作" show-overflow-tooltip>
             <template
               ><el-button
@@ -43,6 +41,11 @@ export default {
     return {
       tableData: [
         {
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
           date: "2016-05-02",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1518 弄",
@@ -54,6 +57,21 @@ export default {
         },
         {
           date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-08",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-06",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-07",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1518 弄",
         },
@@ -77,5 +95,13 @@ export default {
   background-color: #fef0f0;
   color: #f6827f;
   border: 1px solid #fcd5d5;
+}
+.edit-btn:hover {
+  background-color: #409eff;
+  color: #fff;
+}
+.delete-btn:hover {
+  background-color: #f56c6c;
+  color: #fff;
 }
 </style>
