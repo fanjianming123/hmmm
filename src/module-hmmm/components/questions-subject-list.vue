@@ -35,7 +35,7 @@
             {{ row | publishStateFilter }}
           </span>
           <span v-else>
-            {{ row[item.value] }}
+            {{ !!row[item.value] ? row[item.value] : '' }}
           </span>
         </template>
       </el-table-column>

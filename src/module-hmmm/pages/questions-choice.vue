@@ -214,12 +214,17 @@
         <el-button type="primary" @click="onConfirm">确 定</el-button>
       </span>
     </el-dialog>
+    <previewDialog
+      ref="previewDialog"
+      :previewVisible.sync="previewVisible"
+    ></previewDialog>
   </el-card>
 </template>
 
 <script>
 import SearchTop from '../components/questions-subject-search.vue'
 import SubjuctList from '../components/questions-subject-list.vue'
+import previewDialog from '../components/questions-subject-dialog.vue'
 import * as questions from '@/api/hmmm/questions.js'
 import { chkState } from '@/api/hmmm/constants.js'
 export default {
@@ -249,12 +254,14 @@ export default {
       Visible: false,
       radio: '1',
       textarea: '',
-      id: ''
+      id: '',
+      previewVisible: false
     }
   },
   components: {
     SearchTop,
-    SubjuctList
+    SubjuctList,
+    previewDialog
   },
   computed: {
     isChecked() {
@@ -311,7 +318,11 @@ export default {
       // console.log(this.chkState)
       // console.log(tab, event)
     },
-    previewFn(val) {},
+    async previewFn(val) {
+      console.log(val)
+      await this.$refs.previewDialog.getList(val)
+      this.previewVisible = true
+    },
     Checked(val) {
       // console.log(val)
       this.Visible = true

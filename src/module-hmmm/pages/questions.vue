@@ -50,13 +50,17 @@
         </template>
       </el-table-column>
     </SubjuctList>
-
+    <previewDialog
+      ref="previewDialog"
+      :previewVisible.sync="previewVisible"
+    ></previewDialog>
   </el-card>
 </template>
 
 <script>
 import SearchTop from '../components/questions-subject-search.vue'
 import SubjuctList from '../components/questions-subject-list.vue'
+import previewDialog from '../components/questions-subject-dialog.vue'
 import * as questions from '@/api/hmmm/questions.js'
 export default {
   data() {
@@ -75,12 +79,14 @@ export default {
       page: 1,
       pageSize: 5,
       total: 0,
-      dialogVisible: false
+      dialogVisible: false,
+      previewVisible: false
     }
   },
   components: {
     SearchTop,
-    SubjuctList
+    SubjuctList,
+    previewDialog
   },
   created() {
     this.getQuestionsList({
@@ -95,7 +101,11 @@ export default {
       this.tableData = data.items
       this.total = data.counts
     },
-    previewFn() {},
+    async previewFn(val) {
+      // console.log(val)
+      await this.$refs.previewDialog.getList(val)
+      this.previewVisible = true
+    },
     SearchSubjectList(val) {
       this.page = 1
       const data = { ...val, page: this.page, pagesize: this.pageSize }
