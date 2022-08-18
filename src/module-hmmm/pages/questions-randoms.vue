@@ -13,12 +13,15 @@
         </el-col>
         <el-col>
           <el-row justify="end" type="flex" style="height: 32px">
-            <el-button size="small" @click="keywordFn">清除</el-button>
+            <el-button size="small" @click="keywordFn" style="margin-right: 5px"
+              >清除</el-button
+            >
+
             <el-button
               size="small"
               type="primary"
               @click="searchGetRandoms"
-              v-loading="loading"
+              :loading="loading"
             >
               搜索
             </el-button>
@@ -257,6 +260,7 @@ export default {
       })
     },
     async questionFn(row) {
+      console.log(row)
       this.dialogVisible = true
       const { data } = await detail(row)
       console.log(data)
