@@ -97,7 +97,8 @@ export default {
     return {
       showVideo: false,
       list: [],
-      radio: 1
+      radio: 1,
+      checkList: ['', 1]
     }
   },
   props: {
