@@ -211,36 +211,30 @@ export default {
         }
       });
     },
-    dataFormSub(curPermis) {
-      this.$refs.dataForm.validate((valid) => {
-        if (valid) {
-          this.$emit("handleCloseModal");
-          if (_this.formBase.id) {
-            const technologyTypes = [];
-            var data = {
-              id: this.formBase.id,
-              title: this.formBase.title,
-              permissions: curPermis,
-            };
-            update(data).then(() => {
-              this.$emit("newDataes");
-              this.handleClose();
-              this.$message.success("修改成功");
-            });
-          } else {
-            add({
-              title: this.formBase.title,
-              permissions: curPermis,
-            }).then(() => {
-              this.$emit("newDataes");
-              this.handleClose();
-              this.$message.success("添加成功");
-            });
-          }
-        } else {
-          this.$Message.error("*号为必填项!");
-        }
-      });
+    async dataFormSub(curPermis) {
+      await this.$refs.dataForm.validate();
+      if (_this.formBase.id) {
+        // const technologyTypes = [];
+        var data = {
+          id: this.formBase.id,
+          title: this.formBase.title,
+          permissions: curPermis,
+        };
+        update(data).then(() => {
+          this.$emit("newDataes");
+          this.handleClose();
+          this.$message.success("修改成功");
+        });
+      } else {
+        add({
+          title: this.formBase.title,
+          permissions: curPermis,
+        }).then(() => {
+          this.$emit("newDataes");
+          this.handleClose();
+          this.$message.success("添加成功");
+        });
+      }
     },
   },
   // 挂载结束

@@ -26,6 +26,7 @@
           v-model="formInline.subjectID"
           placeholder="请选择"
           @focus="getSubjectList"
+          @change="changeSubjectID"
         >
           <el-option
             v-for="item in subjectList"
@@ -115,6 +116,7 @@
           v-model="formInline.city"
           placeholder="请选择"
           @focus="getCityList"
+          @change="formInline.area = ''"
         >
           <el-option
             v-for="item in citysList"
@@ -205,6 +207,10 @@ export default {
       this.catalogIDList = data
       this.loading = false
     },
+    changeSubjectID() {
+      this.formInline.catalogID = ''
+      this.formInline.tags = ''
+    },
     async getTagsList() {
       this.loading = true
       // console.log(this.formInline.subject);
@@ -293,10 +299,10 @@ export default {
   outline: 0;
   padding: 0 15px;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  width: 238px;
+  width: 330px;
 }
 .el-form {
-  width: 1277px;
+  width: 100%;
 }
 
 ::v-deep .el-form--inline .el-form-item {
@@ -304,15 +310,15 @@ export default {
 }
 ::v-deep .small {
   .el-select .el-select--small {
-    width: 119px;
+    width: 160px;
     margin-right: 5px;
   }
   .el-input__inner {
-    width: 119px;
+    width: 160px;
     margin-right: 5px;
   }
 }
 .SearchButton .el-row {
-  width: 305px;
+  width: 410px;
 }
 </style>

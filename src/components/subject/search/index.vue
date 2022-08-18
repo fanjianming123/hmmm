@@ -4,7 +4,7 @@
       <!-- 左侧表单部分 -->
       <el-col
         ><el-form label-width="80px" :inline="true">
-          <el-form-item :label="labelName + '名称'">
+          <el-form-item :label="label">
             <el-input
               v-model="valueName"
               size="small"
@@ -33,7 +33,6 @@
       <!-- 右侧按钮部分 -->
       <el-col>
         <el-row type="flex" justify="end">
-          <span style="margin-right: 50px">刘剑飞</span>
           <el-button
             type="text"
             icon="el-icon-back"
@@ -66,7 +65,8 @@ export default {
       statusOptions: baseApi.status,
       subjectName: '',
       directoryName: '',
-      tagName: ''
+      tagName: '',
+      keywords: ''
     }
   },
 
@@ -88,6 +88,13 @@ export default {
     isShowBackButton() {
       console.log(this.labelName !== '学科' && this.isFromSubject === true)
       return this.labelName !== '学科' && this.isFromSubject === true
+    },
+    label() {
+      if (this.labelName === '关键字') {
+        return this.labelName
+      } else {
+        return this.labelName + '名称'
+      }
     }
   },
 
@@ -99,6 +106,8 @@ export default {
         this.directoryName = val
       } else if (this.labelName === '标签') {
         this.tagName = val
+      } else if (this.labelName === '关键字') {
+        this.keywords = val
       }
     }
   },
@@ -116,6 +125,8 @@ export default {
         this.$emit('searchDirectory', [this.directoryName, this.state])
       } else if (this.labelName === '标签') {
         this.$emit('searchTag', [this.tagName, this.state])
+      } else if (this.labelName === '关键字') {
+        this.$emit('searchKeywords', [this.keywords, this.state])
       }
     },
     inputFn() {
@@ -125,8 +136,9 @@ export default {
       } else if (this.labelName === '目录') {
         this.directoryName = ''
       } else if (this.labelName === '标签') {
-        console.log(1)
         this.tagName = ''
+      } else if (this.labelName === '关键字') {
+        this.keywords = ''
       }
       this.searchFn()
     },
@@ -139,6 +151,8 @@ export default {
       } else if (this.labelName === '目录') {
         this.$emit('AddDirectory', true)
       } else if (this.labelName === '标签') {
+        this.$emit('AddTag', true)
+      } else if (this.labelName === '关键字') {
         this.$emit('AddTag', true)
       }
     }
