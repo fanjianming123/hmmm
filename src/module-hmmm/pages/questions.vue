@@ -119,7 +119,7 @@ export default {
       })
     },
     modify(val) {
-      console.log(val)
+      // console.log(val)
       this.$router.push({
         path: '/questions/new',
         query: {

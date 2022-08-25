@@ -302,7 +302,7 @@ export default {
   methods: {
     async getQuestionsList(val) {
       const { data } = await questions.choice(val)
-      console.log(data)
+      // console.log(data)
       this.tableData = data.items
       this.total = data.counts
     },
@@ -319,7 +319,7 @@ export default {
       // console.log(tab, event)
     },
     async previewFn(val) {
-      console.log(val)
+      // console.log(val)
       await this.$refs.previewDialog.getList(val)
       this.previewVisible = true
     },
@@ -376,7 +376,7 @@ export default {
       })
     },
     changePublish(val) {
-      console.log(val)
+      // console.log(val)
       const publish = val.publishState ? '上架' : '下架'
       this.$confirm(`您确认${publish}这道题目吗?`, '提示', {
         confirmButtonText: '确定',
@@ -395,7 +395,7 @@ export default {
               pagesize: this.pageSize,
               chkState: this.chkState
             })
-            console.log(111)
+            // console.log(111)
           } catch (error) {
             this.$message.error('操作失败')
           }
