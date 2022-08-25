@@ -130,7 +130,7 @@
               @change="handleChange"
             />
           </el-form-item>
-          <el-form-item label="选项：" v-if="form.questionType !== 3">
+          <el-form-item label="选择：" v-if="form.questionType !== 3">
             <!-- 单选 -->
             <div v-if="form.questionType === 1">
               <div v-for="(item, index) in form.options" :key="index">
@@ -315,10 +315,30 @@ export default {
         question: '', //题干
         options: [
           //选项
-          { code: 'A', title: '', img: '', isRight: false }, // code 代码 title 标题
-          { code: 'B', title: '', img: '', isRight: false }, // img 图片URL isRight 是否是正确答案
-          { code: 'C', title: '', img: '', isRight: false },
-          { code: 'D', title: '', img: '', isRight: false }
+          {
+            code: 'A', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          },
+          {
+            code: 'B', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          },
+          {
+            code: 'C', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          },
+          {
+            code: 'D', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          }
         ],
         videoURL: '', //解析视频
         answer: '', //答案解析
@@ -373,7 +393,6 @@ export default {
       citys, //  地区
       direction, // 方向
       tagsList: [], //标签列表
-
       // 配置项
       editorOption: {
         placeholder: '',
@@ -392,7 +411,7 @@ export default {
         }
       },
       queryId: '',
-      checkList: []
+      checkList: [] //多选框选中框
     }
   },
   created() {
@@ -425,7 +444,6 @@ export default {
       if (this.form.questionType === 1) {
         if (this.optionsRadio === '')
           return this.$message.error('请正确配置选项！')
-
         this.form.options[this.optionsRadio].isRight = true
       }
       if (this.form.questionType === 2) {
@@ -438,16 +456,14 @@ export default {
         return this.$message.error('请添加试题标签在进行提交！')
       }
       this.$refs.form.validate(async (valid) => {
-        if (valid) {
-          this.form.options[this.optionsRadio].isRight = true
-          this.form.tags = this.form.tags.join(', ')
-          this.form.questionType = this.form.questionType.toString()
-          this.form.difficulty = this.form.difficulty.toString()
-          const res = await add(this.form)
-          console.log(res)
-          this.$message.success('创建成功！')
-          this.$router.push('/questions/list')
-        }
+        if (!valid) return
+        this.form.options[this.optionsRadio].isRight = true
+        this.form.tags = this.form.tags.join(', ')
+        this.form.questionType = this.form.questionType.toString()
+        this.form.difficulty = this.form.difficulty.toString()
+        await add(this.form)
+        this.$message.success('创建成功！')
+        this.$router.push('/questions/list')
       })
     },
     // handleImgUpload() {
@@ -534,10 +550,30 @@ export default {
       this.optionsRadio = ''
       if (val === 1) {
         this.form.options = [
-          { code: 'A', title: '', img: '', isRight: false },
-          { code: 'B', title: '', img: '', isRight: false },
-          { code: 'C', title: '', img: '', isRight: false },
-          { code: 'D', title: '', img: '', isRight: false }
+          {
+            code: 'A', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          },
+          {
+            code: 'B', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          },
+          {
+            code: 'C', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          },
+          {
+            code: 'D', //代码
+            title: '', //标题
+            img: '', //图片url
+            isRight: false //是否正确答案
+          }
         ]
       }
     },
