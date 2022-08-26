@@ -53,7 +53,7 @@
           style="width: 100%; margin-bottom: 30px"
           :loading="loading"
           @click.native.prevent="handleLogin"
-          >{{ $t("login.logIn") }}</el-button
+          >{{ $t('login.logIn') }}</el-button
         >
       </el-form>
     </div>
@@ -61,82 +61,85 @@
 </template>
 
 <script>
-import { validateEmail } from "@/utils/validate";
-import LangSelect from "@/components/LangSelect";
-import shajs from "sha.js";
+import { validateEmail } from '@/utils/validate'
+import LangSelect from '@/components/LangSelect'
+import shajs from 'sha.js'
 
 export default {
   components: { LangSelect },
-  name: "login",
+  name: 'login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validateEmail(value)) {
-        callback(new Error("Please enter the email user name"));
+        callback(new Error('Please enter the email user name'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error("The password can not be less than 6 digits"));
+        callback(new Error('The password can not be less than 6 digits'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
-        username: "root@admin.com",
-        password: "123456",
+        username: 'root@admin.com',
+        password: '123456'
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername },
+          { required: true, trigger: 'blur', validator: validateUsername }
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword },
-        ],
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ]
       },
-      passwordType: "password",
+      passwordType: 'password',
       loading: false,
-      showDialog: false,
-    };
+      showDialog: false
+    }
   },
   methods: {
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password'
       }
     },
     handleLogin() {
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           await this.$store
-            .dispatch("LoginByUsername", {
+            .dispatch('LoginByUsername', {
               username: this.loginForm.username,
-              password: shajs("sha256")
+              password: shajs('sha256')
                 .update(this.loginForm.password)
-                .digest("hex"),
+                .digest('hex')
             })
             .then(() => {
-              this.loading = false;
-              this.$router.push({ path: "/" });
+              this.loading = false
+              this.$router.push({ path: '/' })
             })
             .catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
           // console.log('error submit!!')
-          return false;
+          return false
         }
-      });
-    },
+      })
+    }
   },
-  created() {},
-  destroyed() {},
-};
+  created() {
+    alert('去除console完成')
+    console.log(111)
+  },
+  destroyed() {}
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
@@ -188,14 +191,14 @@ $light_gray: #333;
   width: 100%;
   background-color: $bg;
 
-  background: url("./../assets/bg.jpg");
+  background: url('./../assets/bg.jpg');
   -moz-background-size: 100% 100%;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   .loginBox {
     height: 100%;
     width: 100%;
-    background: url("./../assets/logingBg.png") no-repeat 100% 100%;
+    background: url('./../assets/logingBg.png') no-repeat 100% 100%;
     position: relative;
   }
   .login-form {
