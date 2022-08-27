@@ -463,9 +463,14 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          
-          await remove(val)
-          this.tableList()
+          if (this.pages.page > 1 && this.tableData.length === 1) {
+            await remove(val)
+            this.pages.page -= 1
+            this.tableList()
+          } else {
+            await remove(val)
+            this.tableList()
+          }
           this.$message({
             type: 'success',
             message: '删除成功!'
