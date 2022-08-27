@@ -99,8 +99,11 @@ export default {
     onClose() {
       this.$emit('closeAddDialog')
       this.$refs.ruleForm.resetFields()
+      this.ruleForm.subjectID = null
     },
     async onSave() {
+      // console.log(this.ruleForm.subjectID)
+      if (!this.ruleForm.subjectID) return
       await this.$refs.ruleForm.validate()
       if (this.isEdit) {
         await update({
