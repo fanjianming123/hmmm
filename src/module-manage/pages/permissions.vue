@@ -104,100 +104,64 @@
 </template>
 
 <script>
-import page from "../components/page-tool.vue";
-import { list, remove, detail } from "@/api/base/permissions.js";
-import dayjs from "dayjs";
-import permissionsADD from "../components/permissions-add.vue";
+import page from '../components/page-tool.vue'
+import { list, remove, detail } from '@/api/base/permissions.js'
+import dayjs from 'dayjs'
+import permissionsADD from '../components/permissions-add.vue'
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-      ],
-      RoleName: "",
+      tableData: [],
+      RoleName: '',
       pages: {
         page: 1,
-        pagesize: 10, //发送
+        pagesize: 10 //发送
       },
       ruleInline: {
         title: [
           {
             required: true,
-            message: "用户名不能为空",
-            trigger: "blur",
-          },
-        ],
+            message: '用户名不能为空',
+            trigger: 'blur'
+          }
+        ]
       },
       // text: "创建权限组",
-      counts: "", //总条数
-      page: "", //当前页 传给子组件
-      pagesize: "", //每页显示的条数 传给子组件
+      counts: '', //总条数
+      page: '', //当前页 传给子组件
+      pagesize: '', //每页显示的条数 传给子组件
       Visible: false, // 新增弹层
       PermissionName: false,
-      permissionsLoading: false,
-    };
+      permissionsLoading: false
+    }
   },
   components: {
     page, //分页
     // user, //新增弹层
-    permissionsADD,
+    permissionsADD
   },
   computed: {
     text() {
-      return this.PermissionName ? "创建权限组" : "编辑权限组";
-    },
+      return this.PermissionName ? '创建权限组' : '编辑权限组'
+    }
   },
   created() {
-    this.getpermissions(this.pages);
+    this.getpermissions(this.pages)
   },
 
   methods: {
     handleSelectionChange(val) {
-      console.log(val); // 选中获得当前项  复选框
+      console.log(val) // 选中获得当前项  复选框
     },
     //获取列表数据
     async getpermissions(params) {
-      this.permissionsLoading = true;
-      const { data } = await list(params);
-      this.tableData = data.list;
-      this.counts = data.counts;
-      this.page = data.page;
-      this.pagesize = data.pagesize;
-      this.permissionsLoading = false;
+      this.permissionsLoading = true
+      const { data } = await list(params)
+      this.tableData = data.list
+      this.counts = data.counts
+      this.page = data.page
+      this.pagesize = data.pagesize
+      this.permissionsLoading = false
       // console.log(data);
     },
     //搜索名字
@@ -205,73 +169,79 @@ export default {
       const data = {
         page: this.pages.page,
         pagesize: this.pages.pagesize,
-        title: this.RoleName,
-      };
-      this.getpermissions(data);
+        title: this.RoleName
+      }
+      this.getpermissions(data)
     },
     // 删除input框
     clearInput() {
-      this.RoleName = "";
-      this.getpermissions(this.pages);
+      this.RoleName = ''
+      this.getpermissions(this.pages)
     },
     // 删除当前项
     removeCurrent(row) {
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(async () => {
-          await remove(row);
+          if (this.page > 1 && this.tableData.length === 1) {
+            await remove(row)
+            this.pages -= 1
+            this.getpermissions(this.pages)
+          }else{
+             await remove(row)
+             this.getpermissions(this.pages)
+          }
           this.$message({
-            type: "success",
-            message: "删除成功!",
-          });
-          this.getpermissions(this.pages);
+            type: 'success',
+            message: '删除成功!'
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     // 回车搜索
     enterSearch() {
-      this.searchName();
+      this.searchName()
     },
     // 过滤时间
     formatterTime(row, column, cellValue, index) {
-      return dayjs(cellValue).format("YYYY-MM-DD");
+      return dayjs(cellValue).format('YYYY-MM-DD')
     },
     // 更新pege
     pageChange(val) {
-      this.pages.page = val;
-      this.getpermissions(this.pages);
+      this.pages.page = val
+      this.getpermissions(this.pages)
     },
     //更新pegeSize
     pageSizeChange(val) {
-      this.pages.pagesize = val;
-      this.getpermissions(this.pages);
+      this.pages.pagesize = val
+      this.getpermissions(this.pages)
     },
     // 编辑弹层
     async modifyPermissions(row) {
-      this.Visible = true;
-      this.PermissionName = false;
-      const { data } = await detail(row);
-      this.$refs.permissionsList.formBase = data;
+      this.Visible = true
+      this.PermissionName = false
+      const { data } = await detail(row)
+      this.$refs.permissionsList.formBase = data
     },
     // 新增弹层
     addPermissions() {
-      this.Visible = true;
-      this.PermissionName = true;
+      this.Visible = true
+      this.PermissionName = true
     },
     // 关闭新增权限组
     removeDialog() {
-      this.Visible = false;
-    },
-  },
-};
+      this.Visible = false
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">
