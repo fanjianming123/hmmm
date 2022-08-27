@@ -463,6 +463,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
+          
           await remove(val)
           this.tableList()
           this.$message({
