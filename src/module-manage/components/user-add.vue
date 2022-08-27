@@ -68,9 +68,9 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">{{ $t("table.cancel") }}</el-button>
+        <el-button @click="handleClose">{{ $t('table.cancel') }}</el-button>
         <el-button type="primary" @click="createData">{{
-          $t("table.confirm")
+          $t('table.confirm')
         }}</el-button>
       </div>
     </el-dialog>
@@ -78,30 +78,30 @@
 </template>
 
 <script>
-import { detail, update, add } from "@/api/base/users";
-import zh from "@/lang/zh";
+import { update, add } from '@/api/base/users'
+import zh from '@/lang/zh'
 export default {
-  name: "usersAdd",
+  name: 'usersAdd',
   props: [
-    "Visible",
-    "text",
+    'Visible',
+    'text',
     // "pageTitle",
-    "PermissionGroupsList", //权限组
-    "formBase",
-    "ruleInline",
+    'PermissionGroupsList', //权限组
+    'formBase',
+    'ruleInline'
   ],
   data() {
     return {
-      table: zh.table,
+      table: zh.table
       // dialogFormVisible: false
       // fileList: [],
       // importFileUrl: 'https://jsonplaceholder.typicode.com/posts/',
-    };
+    }
   },
   computed: {
     titleInfo() {
-      return this.text ? "编辑用户" : "创建用户";
-    },
+      return this.text ? '编辑用户' : '创建用户'
+    }
   },
   methods: {
     // 弹层显示 头像
@@ -114,8 +114,8 @@ export default {
     // },
     // 对话框退出
     handleClose() {
-      this.$emit("update:Visible", false);
-      this.$refs.dataForm.resetFields();
+      this.$emit('update:Visible', false)
+      this.$refs.dataForm.resetFields()
       // this.formBase = {};
     },
 
@@ -123,28 +123,28 @@ export default {
     createData() {
       this.$refs.dataForm.validate((valid) => {
         if (valid) {
-          this.$emit("handleCloseModal");
+          this.$emit('handleCloseModal')
           const data = {
-            ...this.formBase,
-          };
+            ...this.formBase
+          }
           if (this.formBase.id) {
             update(data).then(() => {
-              this.$emit("newDataes");
-              this.handleClose();
-              this.$message.success("修改成功");
-            });
+              this.$emit('newDataes')
+              this.handleClose()
+              this.$message.success('修改成功')
+            })
           } else {
             add(this.formBase).then(() => {
-              this.$emit("newDataes");
-              this.handleClose();
-              this.$message.success("添加成功");
-            });
+              this.$emit('newDataes')
+              this.handleClose()
+              this.$message.success('添加成功')
+            })
           }
         } else {
-          this.$Message.error("*号为必填项!");
+          this.$Message.error('*号为必填项!')
         }
-      });
-    },
+      })
+    }
   },
   // 挂载结束
 
@@ -152,8 +152,8 @@ export default {
   // 创建完毕状态
   created() {},
   // 组件更新
-  updated: function () {},
-};
+  updated: function () {}
+}
 </script>
 <style>
 .el-form--label-left .el-form-item__label {
