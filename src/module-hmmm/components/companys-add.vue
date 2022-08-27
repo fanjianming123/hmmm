@@ -1,13 +1,16 @@
 <template>
   <div class="add-form">
-    <el-dialog :title="titleInfo.text+titleInfo.pageTitle" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="titleInfo.text + titleInfo.pageTitle"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form
         :rules="ruleInline"
         ref="dataForm"
         :model="formBase"
         label-position="left"
         label-width="150px"
-        style="width: 80%; margin-left:10px;"
+        style="width: 80%; margin-left: 10px"
       >
         <el-form-item label="企业名称" prop="shortName">
           <el-input v-model="formBase.shortName"></el-input>
@@ -20,22 +23,32 @@
         <el-form-item label="城市" prop="province">
           <el-select
             class="filter-item"
-            style="width: 130px;"
+            style="width: 130px"
             v-model="formBase.province"
             @keyup.enter="handleFilter"
             @change="handleProvince"
             filterable
           >
-            <el-option v-for="item in citySelect.province" :key="item" :label="item" :value="item"></el-option>
+            <el-option
+              v-for="item in citySelect.province"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
           </el-select>
           <el-select
             class="filter-item"
-            style="width: 130px;"
+            style="width: 130px"
             v-model="formBase.city"
             @keyup.enter="handleFilter"
             filterable
           >
-            <el-option v-for="item in citySelect.cityDate" :key="item" :label="item" :value="item"></el-option>
+            <el-option
+              v-for="item in citySelect.cityDate"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="方向（企业标签）" prop="tags">
@@ -44,15 +57,17 @@
         <el-form-item label="备注" prop="remarks">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="请输入"
             v-model="formBase.remarks"
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormH">{{$t('table.cancel')}}</el-button>
-        <el-button type="primary" @click="createData">{{$t('table.confirm')}}</el-button>
+        <el-button @click="dialogFormH">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="createData">{{
+          $t('table.confirm')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -72,7 +87,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       dialogFormVisible: false,
       citySelect: {
@@ -94,11 +109,11 @@ export default {
   computed: {},
   methods: {
     // 弹层显示
-    dialogFormV () {
+    dialogFormV() {
       this.dialogFormVisible = true
     },
     // 弹层隐藏
-    dialogFormH () {
+    dialogFormH() {
       this.dialogFormVisible = false
     },
     // 获取省
@@ -111,8 +126,8 @@ export default {
       this.formBase.city = this.citySelect.cityDate[0]
     },
     // 表单提交
-    createData () {
-      this.$refs.dataForm.validate(async valid => {
+    createData() {
+      this.$refs.dataForm.validate(async (valid) => {
         if (valid) {
           this.dialogFormH()
           const data = {
@@ -137,14 +152,14 @@ export default {
 
   mounted: function () {},
   // 创建完毕状态
-  created () {
+  created() {
     this.getCityData()
   },
   // 组件更新
   updated: function () {}
 }
 </script>
-<style>
+<style scoped>
 .el-form--label-left .el-form-item__label {
   text-align: right;
 }

@@ -155,7 +155,7 @@ export default {
   updated: function () {}
 }
 </script>
-<style>
+<style scoped>
 .el-form--label-left .el-form-item__label {
   text-align: right;
 }

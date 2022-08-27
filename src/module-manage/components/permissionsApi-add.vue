@@ -150,7 +150,7 @@ export default {
   updated: function () {}
 }
 </script>
-<style>
+<style scoped>
 .el-tree {
   margin-top: 8px;
 }

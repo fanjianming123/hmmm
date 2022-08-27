@@ -1,24 +1,24 @@
 <template>
   <div class="pages">
-      <el-pagination background
+    <el-pagination
+      background
       @size-change="onPageSizeChange"
       @current-change="onPageChange"
       :current-page="Number(paginationPage)"
       :total="Number(total)"
       :page-size="Number(paginationPagesize)"
-      :page-sizes="[10,20,30, 50]"
+      :page-sizes="[10, 20, 30, 50]"
       layout=" prev, pager,next,sizes,jumper"
-      >
-      </el-pagination>
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
 export default {
   name: 'PageTool',
   props: ['total', 'paginationPage', 'paginationPagesize'],
-  data () {
-    return {
-    }
+  data() {
+    return {}
   },
   methods: {
     // 进入某一页
@@ -32,9 +32,11 @@ export default {
   }
 }
 </script>
-<style>
-.blue{color: #409EFF;}
-.el-pagination__jump{
+<style scoped>
+.blue {
+  color: #409eff;
+}
+.el-pagination__jump {
   margin: 0;
 }
 </style>

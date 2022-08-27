@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div style="border: 1px solid #ccc; margin-top: 10px">
       <!-- 工具栏 -->
       <Toolbar
@@ -17,7 +16,6 @@
         @onCreated="onCreated"
       />
     </div>
-
   </div>
 </template>
 
@@ -27,7 +25,7 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 export default {
   name: 'MyEditor',
   components: { Editor, Toolbar },
-  data () {
+  data() {
     return {
       editor: null,
       html: '',
@@ -47,14 +45,13 @@ export default {
   props: {
     count: {
       type: String
-
     }
   },
-  created () {
+  created() {
     this.html = this.count
   },
   watch: {
-    count (val) {
+    count(val) {
       if (val !== '') {
         this.editor.setHtml(this.count)
       } else {
@@ -63,19 +60,19 @@ export default {
     }
   },
   methods: {
-    onCreated (editor) {
+    onCreated(editor) {
       this.editor = Object.seal(editor) // 【注意】一定要用 Object.seal() 否则会报错
     },
-    onChange (editor) {
+    onChange(editor) {
       this.$emit('update:count', editor.getHtml())
-    //   console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
+      //   console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
     },
-    getEditorText () {
+    getEditorText() {
       const editor = this.editor
       if (editor == null) return
       console.log(editor.getText()) // 执行 editor API
     },
-    printEditorHtml () {
+    printEditorHtml() {
       const editor = this.editor
       if (editor == null) return
       console.log(editor.getHtml()) // 执行 editor API
@@ -87,12 +84,12 @@ export default {
   //       this.html = '<p>Ajax 异步设置内容 HTML</p>'
   //     }, 1500)
   //   },
-  beforeDestroy () {
+  beforeDestroy() {
     const editor = this.editor
     if (editor == null) return
-    editor.destroy(this.html = '') // 组件销毁时，及时销毁 editor ，重要！！！
+    editor.destroy((this.html = '')) // 组件销毁时，及时销毁 editor ，重要！！！
   }
 }
 </script>
 
-<style src="@wangeditor/editor/dist/css/style.css"></style>
+<style src="@wangeditor/editor/dist/css/style.css" scoped></style>

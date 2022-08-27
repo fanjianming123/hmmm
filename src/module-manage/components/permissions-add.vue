@@ -26,64 +26,63 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">{{ $t("table.cancel") }}</el-button>
+        <el-button @click="handleClose">{{ $t('table.cancel') }}</el-button>
         <el-button type="primary" @click="handleAdd('formBase')">{{
-          $t("table.confirm")
+          $t('table.confirm')
         }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { detail, update, add } from "@/api/base/permissions";
-import { list } from "@/api/base/menus.js";
-let _this = [];
+import { detail, update, add } from '@/api/base/permissions'
+import { list } from '@/api/base/menus.js'
+let _this = []
 export default {
-  name: "usersAdd",
-  props: ["text", "pageTitle", "ruleInline", "Visible"],
+  name: 'usersAdd',
+  props: ['text', 'pageTitle', 'ruleInline', 'Visible'],
   data() {
     return {
       PermissionGroupsmenu: [],
       defaultProps: {
-        label: "title",
+        label: 'title'
       },
       permissions: [],
       treeCheckedNodes: [],
       formBase: {
         id: 0,
-        create_date: "",
-        title: "",
-        permissions: [],
+        create_date: '',
+        title: '',
+        permissions: []
       },
-      curPermissions: [],
-    };
+      curPermissions: []
+    }
   },
   computed: {
     treeData() {
       function createNode(item) {
         // 复选框选择
-        let checked = false;
-        let selected = false;
+        let checked = false
+        let selected = false
         if (_this !== null && _this.formBase.permissions.length > 0) {
           const per = _this.formBase.permissions.find(function (value, index) {
-            return value === item.id;
-          });
-          selected = !!per;
+            return value === item.id
+          })
+          selected = !!per
         }
         // 标记勾选
         if (selected) {
-          const isPoint =
-            item.childs === undefined && item.points === undefined;
-          const hasChilds = item.childs !== undefined && item.childs.length > 0;
-          const hasPoints = item.points !== undefined && item.points.length > 0;
+          const isPoint = item.childs === undefined && item.points === undefined
+          const hasChilds = item.childs !== undefined && item.childs.length > 0
+          const hasPoints = item.points !== undefined && item.points.length > 0
           if (isPoint) {
-            checked = true;
+            checked = true
           } else if (hasPoints) {
-            checked = false;
+            checked = false
           } else if (hasChilds) {
-            checked = false;
+            checked = false
           } else {
-            checked = true;
+            checked = true
           }
         }
         return {
@@ -91,75 +90,75 @@ export default {
           title: item.title,
           children: [],
           selected: selected,
-          checked: checked,
-        };
+          checked: checked
+        }
       }
       function parseNodes(nodes, parentNode) {
         for (const it of nodes) {
-          const node = createNode(it);
+          const node = createNode(it)
           // 标记选中
           // console.log(node.checked)
           if (node.checked) {
-            parentNode.selected = true;
+            parentNode.selected = true
           }
           if (it.childs !== undefined && it.childs.length > 0) {
-            parseNodes(it.childs, node);
+            parseNodes(it.childs, node)
           } else if (it.points !== undefined && it.points.length > 0) {
-            parseNodes(it.points, node);
+            parseNodes(it.points, node)
           }
-          parentNode.children.push(node);
+          parentNode.children.push(node)
         }
       }
-      const nodes = createNode({ title: "系统菜单和页面权限点", expand: true });
-      parseNodes(this.PermissionGroupsmenu, nodes);
-      return [nodes];
-    },
+      const nodes = createNode({ title: '系统菜单和页面权限点', expand: true })
+      parseNodes(this.PermissionGroupsmenu, nodes)
+      return [nodes]
+    }
   },
   methods: {
     // 退出
     handleClose() {
-      this.$emit("handleCloseModal");
-      this.$refs.dataForm.resetFields();
-      this.handleResetForm();
+      this.$emit('handleCloseModal')
+      this.$refs.dataForm.resetFields()
+      this.handleResetForm()
     },
     // 表单重置
     handleResetForm() {
       this.formBase = {
         id: 0,
-        title: "",
-        permissions: [],
-      };
+        title: '',
+        permissions: []
+      }
     },
     // 编辑详情数据加载
     hanldeEditForm(objeditId) {
-      this.formBase.id = objeditId;
+      this.formBase.id = objeditId
       var data = {
-        id: objeditId,
-      };
+        id: objeditId
+      }
       detail(data).then((ret, err) => {
         if (err) {
-          return err;
+          return err
         }
-        this.formBase.id = ret.data.id;
-        this.formBase.title = ret.data.title;
-        this.formBase.permissions = ret.data.permissions;
-      });
+        this.formBase.id = ret.data.id
+        this.formBase.title = ret.data.title
+        this.formBase.permissions = ret.data.permissions
+      })
     },
     setupData() {
       list().then((data) => {
-        this.PermissionGroupsmenu = data.data;
-      });
+        this.PermissionGroupsmenu = data.data
+      })
     },
 
     // 节点复选框被选中
     handleCheckChange(data, checked, indeterminate) {
       // console.log(checked.checkedNodes);
-      this.treeCheckedNodes = checked.checkedNodes;
+      this.treeCheckedNodes = checked.checkedNodes
     },
     // 表单提交
     handleAdd(object) {
       // 读取完整节点
-      const curPermissions = new Set();
+      const curPermissions = new Set()
       // function parse(nodes, selectedId) {
       //   for (const it of nodes) {
       //     let isFind = false
@@ -181,75 +180,75 @@ export default {
       // }
       // 已选中的控件节点
       if (this.treeCheckedNodes.length === 0) {
-        this.treeCheckedNodes = this.$refs.treeMenu.getCheckedNodes();
+        this.treeCheckedNodes = this.$refs.treeMenu.getCheckedNodes()
         if (this.treeCheckedNodes.length === 0) {
-          return;
+          return
         }
       }
       // 读取
       for (const it of this.treeCheckedNodes) {
         // parse(this.PermissionGroupsmenu, it.id)
-        curPermissions.add(it.id);
+        curPermissions.add(it.id)
       }
-      this.curPermissions = Array.from(curPermissions);
+      this.curPermissions = Array.from(curPermissions)
       // 保存
       if (this.curPermissions.length === 0) {
         this.$message({
           showClose: true,
-          message: "请选择需要的权限及页面权限点",
-          type: "error",
-        });
+          message: '请选择需要的权限及页面权限点',
+          type: 'error'
+        })
       } else {
         // console.log(this.curPermissions);
-        this.dataFormSub(this.curPermissions);
+        this.dataFormSub(this.curPermissions)
       }
     },
     nodeDate(nodesPath, curPermissions, findId) {
       nodesPath.map(function (item, index) {
         if (curPermissions.indexOf(item.id) === -1) {
-          curPermissions.push(findId);
+          curPermissions.push(findId)
         }
-      });
+      })
     },
     async dataFormSub(curPermis) {
-      await this.$refs.dataForm.validate();
+      await this.$refs.dataForm.validate()
       if (_this.formBase.id) {
         // const technologyTypes = [];
         var data = {
           id: this.formBase.id,
           title: this.formBase.title,
-          permissions: curPermis,
-        };
+          permissions: curPermis
+        }
         update(data).then(() => {
-          this.$emit("newDataes");
-          this.handleClose();
-          this.$message.success("修改成功");
-        });
+          this.$emit('newDataes')
+          this.handleClose()
+          this.$message.success('修改成功')
+        })
       } else {
         add({
           title: this.formBase.title,
-          permissions: curPermis,
+          permissions: curPermis
         }).then(() => {
-          this.$emit("newDataes");
-          this.handleClose();
-          this.$message.success("添加成功");
-        });
+          this.$emit('newDataes')
+          this.handleClose()
+          this.$message.success('添加成功')
+        })
       }
-    },
+    }
   },
   // 挂载结束
 
   mounted: function () {},
   // 创建完毕状态
   created() {
-    _this = this;
-    this.setupData();
+    _this = this
+    this.setupData()
   },
   // 组件更新
-  updated: function () {},
-};
+  updated: function () {}
+}
 </script>
-<style>
+<style scoped>
 .el-tree {
   margin-top: 8px;
 }
