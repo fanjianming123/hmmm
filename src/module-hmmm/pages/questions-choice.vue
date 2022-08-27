@@ -412,7 +412,7 @@ export default {
           try {
             await questions.remove(val)
             this.$message.success('删除成功')
-            if (this.tableData.length > 0) {
+            if (this.pagesize !== 0) {
               this.getQuestionsList({
                 page: this.page,
                 pagesize: this.pageSize,
