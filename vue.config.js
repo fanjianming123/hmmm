@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'production') {
     //或略打包只能忽略js包
     'element-ui': 'ELEMENT',
     vue: 'Vue',
-    'video.js': 'video.js',
+    // 'video.js': 'video.js',
     'cos-js-sdk-v5': 'COS'
   }
 }
