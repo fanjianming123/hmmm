@@ -170,6 +170,7 @@
         >
       </p>
       <video
+        style="width: 600px"
         controls="controls"
         v-if="showVideo"
         :src="list.videoURL || 'https://v-cdn.zjol.com.cn/277004.mp4'"
@@ -254,9 +255,15 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        await removeRandoms(row)
+        if (this.page > 1 && this.tableData.length === 1) {
+          await removeRandoms(row)
+          this.page -= 1
+          this.getRandoms()
+        } else {
+          await removeRandoms(row)
+          this.getRandoms()
+        }
         this.$message.success('删除成功')
-        this.getRandoms()
       })
     },
     async questionFn(row) {

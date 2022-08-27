@@ -137,9 +137,26 @@ export default {
           try {
             await questions.remove(val)
             this.$message.success('删除成功')
+            this.page = +this.page
+            if (this.page > 1 && this.tableData.length === 1) {
+              console.log(this.page)
+              this.page -= 1
+              this.getQuestionsList({
+                page: this.page,
+                pagesize: this.pageSize,
+                chkState: this.chkState
+              })
+            } else {
+              this.getQuestionsList({
+                page: this.page,
+                pagesize: this.pageSize,
+                chkState: this.chkState
+              })
+            }
             this.getQuestionsList({
               page: this.page,
-              pagesize: this.pageSize
+              pagesize: this.pageSize,
+              chkState: this.chkState
             })
           } catch (error) {
             this.$message.error('删除失败')

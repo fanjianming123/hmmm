@@ -17,7 +17,9 @@
           <el-button type="text" @click="subjectClassificationFn(data)"
             >学科分类</el-button
           >
-          <el-button type="text" @click="subjectTagFn(data)">学科标签</el-button>
+          <el-button type="text" @click="subjectTagFn(data)"
+            >学科标签</el-button
+          >
           <el-button type="text" @click="editFn(data)">修改</el-button>
           <el-button type="text" @click="deleteFn(data)">删除</el-button>
         </template>
@@ -104,7 +106,7 @@ export default {
         query: val
       })
     },
-     subjectTagFn(val) {
+    subjectTagFn(val) {
       console.log(val)
       this.$router.push({
         path: '/subjects/tags',
@@ -125,8 +127,15 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          await remove(data)
-          this.getSubjectList()
+          // console.log(this.tableData)
+          if (this.baseParams.page > 1 && this.tableData.items.length === 1) {
+            await remove(data)
+            this.baseParams.page -= 1
+            this.getSubjectList()
+          } else {
+            await remove(data)
+            this.getSubjectList()
+          }
           this.$message({
             type: 'success',
             message: '删除成功!'

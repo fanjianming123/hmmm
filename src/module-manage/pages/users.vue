@@ -98,95 +98,95 @@
 </template>
 
 <script>
-import page from "../components/page-tool.vue";
-import { list, remove } from "@/api/base/users.js";
-import { simple } from "@/api/base/permissions.js";
-import userFrom from "../components/user-add.vue";
+import page from '../components/page-tool.vue'
+import { list, remove } from '@/api/base/users.js'
+import { simple } from '@/api/base/permissions.js'
+import userFrom from '../components/user-add.vue'
 export default {
-  name: "usersInfo",
+  name: 'usersInfo',
   data() {
     return {
-      RoleName: "",
+      RoleName: '',
       UserLoading: false,
       userData: [],
-      counts: "", //总条数
+      counts: '', //总条数
       pages: {
         page: 1,
-        pagesize: 10,
+        pagesize: 10
       },
-      paginationPage: "", //当前页数
-      paginationPagesize: "", //每页显示条目个数，支持 .sync 修饰符
+      paginationPage: '', //当前页数
+      paginationPagesize: '', //每页显示条目个数，支持 .sync 修饰符
       isEdit: false,
-      pageTitle: "#409eff",
+      pageTitle: '#409eff',
       Visible: false,
       list: [], //权限组
       formBase: {
-        username: "",
-        email: "",
-        password: "",
-        role: "",
-        permission_group_id: "",
-        phone: "",
+        username: '',
+        email: '',
+        password: '',
+        role: '',
+        permission_group_id: '',
+        phone: '',
         sex: 1,
-        introduction: "",
+        introduction: ''
       }, // 新增表单数据
       ruleInline: {
         username: [
-          { required: true, message: "用户名不能为空", trigger: "blur" },
+          { required: true, message: '用户名不能为空', trigger: 'blur' }
         ],
-        email: [{ required: true, message: "邮箱不能为空", trigger: "blur" }],
+        email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
         password: [
-          { required: true, message: "密码不能为空", trigger: "blur" },
+          { required: true, message: '密码不能为空', trigger: 'blur' }
         ],
-        role: [{ required: true, message: "角色不能为空", trigger: "blur" }],
-        phone: [{ required: true, message: "电话不能为空", trigger: "blur" }],
-      },
-    };
+        role: [{ required: true, message: '角色不能为空', trigger: 'blur' }],
+        phone: [{ required: true, message: '电话不能为空', trigger: 'blur' }]
+      }
+    }
   },
   components: {
     page, //分页
-    userFrom, //新增弹层
+    userFrom //新增弹层
   },
   created() {
-    this.getuserInfo(this.pages);
+    this.getuserInfo(this.pages)
   },
 
   methods: {
     //获取用户列表
     async getuserInfo(data) {
-      this.UserLoading = true;
-      const res = await list(data);
+      this.UserLoading = true
+      const res = await list(data)
       // console.log(res)
-      this.userData = res.data.list;
-      this.counts = res.data.counts;
-      this.paginationPage = res.pages;
-      this.paginationPagesize = res.pagesize;
-      this.UserLoading = false;
+      this.userData = res.data.list
+      this.counts = res.data.counts
+      this.paginationPage = res.pages
+      this.paginationPagesize = res.pagesize
+      this.UserLoading = false
     },
     //确定搜索按钮
     serachName() {
       const data = {
         page: this.pages.page,
         pagesize: this.pages.pagesize,
-        username: this.RoleName,
-      };
-      this.getuserInfo(data);
+        username: this.RoleName
+      }
+      this.getuserInfo(data)
     },
     //取消搜索按钮
     deleteInput() {
-      this.RoleName = "";
-      this.getuserInfo(this.pages);
+      this.RoleName = ''
+      this.getuserInfo(this.pages)
     },
     // 回车
     enterName() {
-      this.serachName();
+      this.serachName()
     },
     //新增
     async addIshow() {
-      this.Visible = true;
-      this.isEdit = false;
-      const { data } = await simple();
-      this.list = data; //权限组
+      this.Visible = true
+      this.isEdit = false
+      const { data } = await simple()
+      this.list = data //权限组
     },
     //编辑
     isShowedit(val) {
@@ -199,47 +199,53 @@ export default {
         permission_group_id: val.permission_group_id,
         phone: val.phone,
         introduction: val.introduction,
-        id: val.id,
-      };
+        id: val.id
+      }
       // console.log(newVal);
-      this.formBase = newVal;
-      this.Visible = true;
-      this.isEdit = true;
+      this.formBase = newVal
+      this.Visible = true
+      this.isEdit = true
     },
     //点击进入某一页
     pageChange(val) {
-      this.pages.page = val;
-      this.getuserInfo(this.pages);
+      this.pages.page = val
+      this.getuserInfo(this.pages)
     },
     // 每页显示条数
     pageSizeChange(val) {
-      this.pages.pagesize = val;
-      this.getuserInfo(this.pages);
+      this.pages.pagesize = val
+      this.getuserInfo(this.pages)
     },
     //删除
     async deleteEdit(row) {
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(async () => {
-          await remove(row);
+          if (this.pages.page > 1 && this.userData.length === 1) {
+            await remove(row)
+            this.pages.page -= 1
+            this.getuserInfo(this.pages)
+          } else {
+            await remove(row)
+            this.getuserInfo(this.pages)
+          }
           this.$message({
-            type: "success",
-            message: "删除成功!",
-          });
-          this.getuserInfo(this.pages);
+            type: 'success',
+            message: '删除成功!'
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-  },
-};
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">
